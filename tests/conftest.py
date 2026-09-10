@@ -187,6 +187,32 @@ def _install_homeassistant_stubs() -> None:
 
     entity_platform.AddEntitiesCallback = AddEntitiesCallback
 
+    storage = _ensure_module("homeassistant.helpers.storage")
+
+    class Store:
+        """Stand-in for homeassistant.helpers.storage.Store.
+
+        Persists to a dict attached to the ``hass`` instance passed in, so
+        state survives across multiple Store(...) instantiations pointed at
+        the same key within a single test (mirroring real on-disk storage)
+        without leaking between tests that each get a fresh stub instance.
+        """
+
+        def __init__(self, hass, version: int, key: str) -> None:
+            self.hass = hass
+            self.version = version
+            self.key = key
+            if not hasattr(hass, "_test_storage"):
+                hass._test_storage = {}
+
+        async def async_load(self):
+            return self.hass._test_storage.get(self.key)
+
+        async def async_save(self, data) -> None:
+            self.hass._test_storage[self.key] = data
+
+    storage.Store = Store
+
 
 _install_homeassistant_stubs()
 

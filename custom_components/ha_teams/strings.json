@@ -1,6 +1,13 @@
 {
   "config": {
     "step": {
+      "tenant": {
+        "title": "Microsoft Entra tenant",
+        "description": "Enter your Microsoft Entra (Azure AD) tenant ID or domain (e.g. `contoso.onmicrosoft.com`) if your app registration is single-tenant (\"Accounts in this organizational directory only\"). Leave the default `common` if it's multi-tenant or supports personal Microsoft accounts.",
+        "data": {
+          "tenant_id": "Tenant ID / domain (or common/organizations/consumers)"
+        }
+      },
       "pick_implementation": {
         "title": "Pick authentication method"
       },
