@@ -4,9 +4,9 @@ Combines the low-level HTTP transport (``client.py``) with the discovery
 (``discovery.py``) and messaging (``messages.py``) endpoint mixins into the
 single :class:`TeamsGraphApiClient` used by the rest of the integration.
 
-Planned future transports (see ``voorstel.md`` and ``skill-ha-teams.md``)
-live alongside these as their own modules so they can be wired in without
-reshaping this package again:
+Planned future transports (see "Deferred Features" in
+``.github/copilot-instructions.md``) live alongside these as their own
+modules so they can be wired in without reshaping this package again:
 
 * ``activity.py`` — Graph "teamwork activity feed" notifications.
 * ``app_installation.py`` — installing/uninstalling the HA bot/app for a

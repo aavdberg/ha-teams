@@ -32,8 +32,8 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     async def _async_handle_send_card(call: ServiceCall) -> None:
         """Handle the ``ha_teams.send_card`` service call.
 
-        See "voorstel.md" section 9.3: allows sending a full Adaptive Card
-        (not just plain text) to the channel configured on a given entry.
+        Allows sending a full Adaptive Card (not just plain text) to the
+        channel configured on a given entry.
         """
         entry_id = call.data[ATTR_CONFIG_ENTRY_ID]
         entry = hass.config_entries.async_get_entry(entry_id)

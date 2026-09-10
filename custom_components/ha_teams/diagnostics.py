@@ -1,7 +1,7 @@
 """Diagnostics support for Microsoft Teams.
 
 Redacts anything sensitive (tokens, IDs) so users can safely attach
-diagnostics to bug reports. See "voorstel.md" section 14.
+diagnostics to bug reports.
 """
 
 from __future__ import annotations
