@@ -1,0 +1,53 @@
+name: Idea / proposal
+description: Share an idea that still needs discussion or design.
+title: "[Idea]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for ideas that are not yet a fully specified feature request.
+
+        If you mainly want help with setup or troubleshooting, please use GitHub Discussions or the support template.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-checks
+      options:
+        - label: I have searched existing issues and discussions for a similar idea.
+          required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Idea
+      description: What would you like ha-teams to support or do differently?
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why would this be useful for Home Assistant and Teams users?
+    validations:
+      required: true
+  - type: dropdown
+    id: maturity
+    attributes:
+      label: How mature is this idea?
+      options:
+        - Rough idea
+        - I have a suggested design
+        - I can help test it
+        - I can help implement it
+    validations:
+      required: true
+  - type: textarea
+    id: design-notes
+    attributes:
+      label: Design notes
+      description: Include API references, Home Assistant examples, Teams screenshots, or constraints if you have them.
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks or compatibility concerns
+      description: Mention privacy, security, permissions, rate limits, backwards compatibility, or UX concerns.

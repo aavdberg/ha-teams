@@ -1,0 +1,129 @@
+name: Bug report
+description: Report something that is not working in ha-teams.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem. Please include enough detail to reproduce it.
+
+        Do not paste Microsoft client secrets, refresh tokens, local Home Assistant tokens, tenant-private data, or other secrets.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-checks
+      options:
+        - label: I have searched existing issues and discussions for the same problem.
+          required: true
+        - label: I am using the latest stable or beta release that is relevant to this issue.
+          required: true
+        - label: I have restarted Home Assistant after installing or updating the integration.
+          required: true
+  - type: input
+    id: integration-version
+    attributes:
+      label: ha-teams version
+      description: Use the release version shown in HACS or the manifest version if installed manually.
+      placeholder: "0.3.0"
+    validations:
+      required: true
+  - type: input
+    id: ha-version
+    attributes:
+      label: Home Assistant version
+      placeholder: "2026.9.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: installation-method
+    attributes:
+      label: Installation method
+      options:
+        - HACS stable release
+        - HACS beta release
+        - Manual copy from main
+        - Manual copy from dev
+        - Git clone / symlink
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: ha-install-type
+    attributes:
+      label: Home Assistant installation type
+      options:
+        - Home Assistant OS
+        - Home Assistant Supervised
+        - Home Assistant Container
+        - Home Assistant Core
+        - Unknown
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: transport
+    attributes:
+      label: Transport mode
+      options:
+        - Microsoft Graph delegated
+        - Teams bot/app
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the actual behavior and the impact.
+      placeholder: "The integration fails during OAuth setup with..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include exact Home Assistant screens, service calls, YAML, or Teams channel actions.
+      placeholder: |
+        1. Go to Settings -> Devices & services
+        2. Add Microsoft Teams
+        3. Select ...
+        4. See error ...
+    validations:
+      required: true
+  - type: textarea
+    id: microsoft-config
+    attributes:
+      label: Microsoft Entra / Teams configuration
+      description: Include non-secret details only, such as account type, tenant mode, permissions, and redirect URI type.
+      placeholder: |
+        Supported account type: single-tenant / multi-tenant / personal accounts
+        Tenant value used in the config flow: common / tenant ID / verified domain
+        Redirect URI type/value: Web, https://my.home-assistant.io/redirect/oauth
+        Graph permissions granted: ChannelMessage.Send, Team.ReadBasic.All, Channel.ReadBasic.All, offline_access
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Redact tokens, authorization codes, client IDs if you consider them sensitive, tenant-private values, and personal data.
+      render: text
+      placeholder: |
+        Logger examples for debugging:
+          custom_components.ha_teams: debug
+          custom_components.ha_teams.oauth: debug
+          custom_components.ha_teams.graph: debug
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics and screenshots
+      description: Add screenshots or diagnostics if they help. Redact personal or tenant-private information.
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context

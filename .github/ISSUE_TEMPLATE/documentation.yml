@@ -1,0 +1,47 @@
+name: Documentation improvement
+description: Report missing, confusing, or outdated documentation.
+title: "[Docs]: "
+labels: ["documentation"]
+body:
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-checks
+      options:
+        - label: I have checked the latest README on the dev or main branch.
+          required: true
+        - label: I have searched existing issues and discussions.
+          required: true
+  - type: dropdown
+    id: docs-area
+    attributes:
+      label: Documentation area
+      options:
+        - HACS installation
+        - Microsoft Entra app registration
+        - Application Credentials
+        - OAuth / PKCE
+        - Tenant setup
+        - Graph permissions
+        - Sending notifications
+        - Teams bot/app future setup
+        - Development / release workflow
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is unclear or missing?
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested documentation change
+      description: If possible, include the exact text or section you propose changing.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Link to relevant Home Assistant, HACS, Microsoft Graph, or Teams documentation if useful.

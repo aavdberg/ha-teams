@@ -1,0 +1,76 @@
+name: Setup help / question
+description: Ask for help with installation, OAuth setup, permissions, or Teams channel selection.
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For general questions, examples, and setup discussion, GitHub Discussions is preferred.
+
+        Use this issue template when your setup question might point to a missing documentation step or an integration bug.
+        Do not paste Microsoft client secrets, refresh tokens, authorization codes, Home Assistant tokens, or other secrets.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-checks
+      options:
+        - label: I have read the README setup steps.
+          required: true
+        - label: I have searched existing issues and discussions.
+          required: true
+  - type: dropdown
+    id: topic
+    attributes:
+      label: Topic
+      options:
+        - HACS installation
+        - Application Credentials
+        - Microsoft Entra app registration
+        - Tenant / AADSTS sign-in error
+        - Graph permissions / admin consent
+        - Team or channel selection
+        - Sending notifications
+        - HACS icon / branding
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: integration-version
+    attributes:
+      label: ha-teams version
+      placeholder: "0.3.0"
+    validations:
+      required: true
+  - type: input
+    id: ha-version
+    attributes:
+      label: Home Assistant version
+      placeholder: "2026.9.0"
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What are you trying to do, and where are you stuck?
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: Setup details
+      description: Include non-secret details that help understand your configuration.
+      placeholder: |
+        Installation method:
+        Supported account type:
+        Tenant value used:
+        Redirect URI:
+        Permissions granted:
+        Transport mode:
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or screenshots
+      description: Redact secrets, tokens, tenant-private values, and personal data.
+      render: text
