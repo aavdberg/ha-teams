@@ -168,10 +168,11 @@ less Azure setup.
 ## 5. Send notifications
 
 After setup, Home Assistant creates a notify entity for the selected Teams
-channel. The entity ID is usually `notify.microsoft_teams`, but it can be
-different if you renamed the integration entry or added multiple Teams
-entries. Check **Settings → Devices & services → Microsoft Teams →
-Entities** or **Developer Tools → States** for the exact entity ID.
+channel. The entity ID is derived from the integration entry title and can
+be different if you renamed the entry or added multiple Teams entries. Check
+**Settings → Devices & services → Microsoft Teams → Entities** or
+**Developer Tools → States** for the exact entity ID, then replace
+`notify.your_microsoft_teams_entity` in the examples below.
 
 Before sending a test message, make sure the integration entry has a
 destination configured: open **Settings → Devices & services → Microsoft
@@ -183,7 +184,7 @@ Home Assistant cannot know where to post the message.
 ```yaml
 action: notify.send_message
 target:
-  entity_id: notify.microsoft_teams
+  entity_id: notify.your_microsoft_teams_entity
 data:
   title: "Front door"
   message: "Motion detected at {{ now().strftime('%H:%M') }}"
@@ -202,7 +203,7 @@ triggers:
 actions:
   - action: notify.send_message
     target:
-      entity_id: notify.microsoft_teams
+      entity_id: notify.your_microsoft_teams_entity
     data:
       title: "Front door"
       message: "Motion detected at {{ now().strftime('%H:%M') }}."
@@ -221,7 +222,7 @@ triggers:
 actions:
   - action: notify.send_message
     target:
-      entity_id: notify.microsoft_teams
+      entity_id: notify.your_microsoft_teams_entity
     data:
       title: "Low battery"
       message: >-
@@ -242,7 +243,7 @@ triggers:
 actions:
   - action: notify.send_message
     target:
-      entity_id: notify.microsoft_teams
+      entity_id: notify.your_microsoft_teams_entity
     data:
       title: "Alarm triggered"
       message: |

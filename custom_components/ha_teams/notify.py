@@ -11,7 +11,7 @@ from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .destination import require_configured_destination
+from .destination import has_configured_destination, require_configured_destination
 from .graph import GraphApiError, GraphAuthError
 from .renderers.text import build_text_message
 from .transports import transport_label
@@ -45,7 +45,7 @@ class TeamsNotifyEntity(NotifyEntity):
             "manufacturer": "Microsoft",
             "model": transport_label(getattr(runtime, "transport", None)),
         }
-        self._attr_available = bool(runtime.team_id and runtime.channel_id)
+        self._attr_available = has_configured_destination(runtime.team_id, runtime.channel_id)
 
     async def async_send_message(self, message: str, title: str | None = None) -> None:
         """Send a message to the configured Teams channel."""

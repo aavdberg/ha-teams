@@ -5,14 +5,29 @@ from __future__ import annotations
 from homeassistant.exceptions import ServiceValidationError
 
 
+def normalize_destination_id(value: str | None) -> str | None:
+    """Normalize a stored Team or Channel ID."""
+    if value is None:
+        return None
+    normalized = value.strip()
+    return normalized or None
+
+
+def has_configured_destination(team_id: str | None, channel_id: str | None) -> bool:
+    """Return whether both Teams destination IDs are configured."""
+    return normalize_destination_id(team_id) is not None and normalize_destination_id(channel_id) is not None
+
+
 def require_configured_destination(team_id: str | None, channel_id: str | None) -> tuple[str, str]:
     """Return the configured Teams destination or raise a user-facing error."""
-    if team_id and channel_id:
-        return team_id, channel_id
+    normalized_team_id = normalize_destination_id(team_id)
+    normalized_channel_id = normalize_destination_id(channel_id)
+    if normalized_team_id and normalized_channel_id:
+        return normalized_team_id, normalized_channel_id
 
-    if not team_id and not channel_id:
+    if not normalized_team_id and not normalized_channel_id:
         missing_text = "a Team and a Channel"
-    elif not team_id:
+    elif not normalized_team_id:
         missing_text = "a Team"
     else:
         missing_text = "a Channel"

@@ -5,11 +5,22 @@ from __future__ import annotations
 import pytest
 from homeassistant.exceptions import ServiceValidationError
 
-from custom_components.ha_teams.destination import require_configured_destination
+from custom_components.ha_teams.destination import has_configured_destination, require_configured_destination
 
 
 def test_require_configured_destination_returns_team_and_channel() -> None:
     assert require_configured_destination("team-id", "channel-id") == ("team-id", "channel-id")
+
+
+def test_require_configured_destination_strips_whitespace() -> None:
+    assert require_configured_destination(" team-id ", "\tchannel-id\n") == ("team-id", "channel-id")
+
+
+def test_has_configured_destination_matches_validation() -> None:
+    assert has_configured_destination("team-id", "channel-id") is True
+    assert has_configured_destination(" team-id ", " channel-id ") is True
+    assert has_configured_destination(" ", "channel-id") is False
+    assert has_configured_destination("team-id", " ") is False
 
 
 @pytest.mark.parametrize(
@@ -20,6 +31,9 @@ def test_require_configured_destination_returns_team_and_channel() -> None:
         (None, None, "select a Team and a Channel"),
         ("", "channel-id", "select a Team"),
         ("team-id", "", "select a Channel"),
+        (" ", "channel-id", "select a Team"),
+        ("team-id", " ", "select a Channel"),
+        (" ", " ", "select a Team and a Channel"),
     ],
 )
 def test_require_configured_destination_raises_actionable_error(
