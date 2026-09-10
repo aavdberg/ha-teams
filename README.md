@@ -145,6 +145,7 @@ custom_components/ha_teams/
   oauth.py                  # PKCE-enabled OAuth2 implementation
   services.yaml             # ha_teams.send_card service definition
   strings.json / translations/en.json
+  brand/                     # icon.png, icon@2x.png, logo.png, logo@2x.png (local brand images)
 
   graph/                     # Microsoft Graph API client
     __init__.py               # composes TeamsGraphApiClient from the mixins below
@@ -182,6 +183,16 @@ Not yet in the default HACS/Home Assistant core catalogs — add it as a
 custom HACS repository using the button in step 3 above, or copy
 `custom_components/ha_teams` into your Home Assistant
 `config/custom_components/` folder manually, then restart Home Assistant.
+
+The integration ships its own Microsoft Teams brand icon/logo in
+`custom_components/ha_teams/brand/`. Home Assistant **2026.3 and newer**
+picks these up automatically (no extra configuration, no external
+`home-assistant/brands` submission needed) so the integration shows the
+Teams icon instead of a placeholder when adding it under **Devices &
+Services**. On older Home Assistant releases the placeholder icon is
+shown until this integration is submitted to the
+[`home-assistant/brands`](https://github.com/home-assistant/brands)
+repository.
 
 ## License
 
