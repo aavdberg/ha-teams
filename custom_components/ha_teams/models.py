@@ -15,8 +15,8 @@ class TeamsRuntimeData:
 
     client: TeamsGraphApiClient
     transport: str
-    team_id: str
-    channel_id: str
+    team_id: str | None
+    channel_id: str | None
 
 
 type TeamsConfigEntry = ConfigEntry[TeamsRuntimeData]

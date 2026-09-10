@@ -1,0 +1,77 @@
+name: Feature request
+description: Request a concrete enhancement for ha-teams.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for a concrete feature you want implemented.
+
+        For early brainstorming or open-ended discussion, use the Idea template or GitHub Discussions instead.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-checks
+      options:
+        - label: I have searched existing issues and discussions for similar requests.
+          required: true
+        - label: This is about ha-teams, Microsoft Graph, Teams bot/app support, Home Assistant setup, or notification behavior.
+          required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Feature summary
+      description: Describe the feature in one or two paragraphs.
+      placeholder: "Add support for..."
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What user problem does this solve?
+      placeholder: "I want to..."
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed solution
+      description: Describe the behavior, UI, service schema, options flow, or docs you expect.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Mention workarounds or other approaches, if any.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Microsoft Graph delegated notifications
+        - Teams bot/app transport
+        - OAuth / Application Credentials
+        - Config flow / options flow
+        - Notification formatting / Adaptive Cards
+        - HACS / installation
+        - Documentation
+        - Tests / developer workflow
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: What should be true when this feature is done?
+      placeholder: |
+        - Users can ...
+        - Existing entries keep working ...
+        - Documentation explains ...
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context

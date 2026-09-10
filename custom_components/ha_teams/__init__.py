@@ -20,6 +20,7 @@ from .const import (
     SERVICE_SEND_CARD,
     TRANSPORT_GRAPH_DELEGATED,
 )
+from .destination import require_configured_destination
 from .graph import GraphAuthError, TeamsGraphApiClient
 from .models import TeamsConfigEntry, TeamsRuntimeData
 from .transports import normalize_transport
@@ -53,8 +54,9 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
         runtime: TeamsRuntimeData = entry.runtime_data
         if runtime.transport != TRANSPORT_GRAPH_DELEGATED:
             raise ServiceValidationError(f"Unsupported Teams transport for Adaptive Cards: {runtime.transport}")
+        team_id, channel_id = require_configured_destination(runtime.team_id, runtime.channel_id)
         try:
-            await runtime.client.async_send_adaptive_card(runtime.team_id, runtime.channel_id, call.data[ATTR_CARD])
+            await runtime.client.async_send_adaptive_card(team_id, channel_id, call.data[ATTR_CARD])
         except GraphAuthError as err:
             raise ConfigEntryAuthFailed("Microsoft Teams authentication failed") from err
 
