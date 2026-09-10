@@ -2,9 +2,13 @@
 
 DOMAIN = "ha_teams"
 
-# Microsoft identity platform (v2.0) endpoints.
-# "common" allows both personal and work/school accounts; most users will
-# want "organizations" or their tenant id for a single-tenant Azure AD app.
+# Microsoft identity platform (v2.0) endpoints. The tenant segment is
+# configured by the user during the config flow's first step (see
+# tenant_store.py) because it depends on how their Entra app registration
+# is set up: "common" works for multi-tenant/personal-account apps, but
+# single-tenant apps ("Accounts in this organizational directory only")
+# must use their own tenant ID/domain -- Microsoft rejects "common" for
+# those with AADSTS50194.
 DEFAULT_TENANT = "common"
 OAUTH2_AUTHORIZE_TEMPLATE = "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize"
 OAUTH2_TOKEN_TEMPLATE = "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token"
