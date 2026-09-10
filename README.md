@@ -167,6 +167,14 @@ less Azure setup.
 
 ## 5. Send notifications
 
+After setup, Home Assistant creates a notify entity for the selected Teams
+channel. The entity ID is usually `notify.microsoft_teams`, but it can be
+different if you renamed the integration entry or added multiple Teams
+entries. Check **Settings → Devices & services → Microsoft Teams →
+Entities** or **Developer Tools → States** for the exact entity ID.
+
+### Basic notification
+
 ```yaml
 action: notify.send_message
 target:
@@ -175,6 +183,73 @@ data:
   title: "Front door"
   message: "Motion detected at {{ now().strftime('%H:%M') }}"
 ```
+
+### Automation: send a Teams message when a sensor changes
+
+```yaml
+alias: Notify Teams when motion is detected
+description: Send a Microsoft Teams notification when motion starts.
+triggers:
+  - trigger: state
+    entity_id: binary_sensor.front_door_motion
+    from: "off"
+    to: "on"
+actions:
+  - action: notify.send_message
+    target:
+      entity_id: notify.microsoft_teams
+    data:
+      title: "Front door"
+      message: "Motion detected at {{ now().strftime('%H:%M') }}."
+mode: single
+```
+
+### Automation: include entity state in the message
+
+```yaml
+alias: Notify Teams about low battery
+description: Send a Teams notification when a battery sensor is low.
+triggers:
+  - trigger: numeric_state
+    entity_id: sensor.device_battery
+    below: 20
+actions:
+  - action: notify.send_message
+    target:
+      entity_id: notify.microsoft_teams
+    data:
+      title: "Low battery"
+      message: >-
+        {{ state_attr('sensor.device_battery', 'friendly_name') or 'Device' }}
+        battery is {{ states('sensor.device_battery') }}%.
+mode: single
+```
+
+### Automation: multi-line status message
+
+```yaml
+alias: Notify Teams when alarm is triggered
+description: Send a high-priority status message to Teams.
+triggers:
+  - trigger: state
+    entity_id: alarm_control_panel.home_alarm
+    to: "triggered"
+actions:
+  - action: notify.send_message
+    target:
+      entity_id: notify.microsoft_teams
+    data:
+      title: "Alarm triggered"
+      message: |
+        Home Assistant alarm state changed to triggered.
+
+        Time: {{ now().strftime('%Y-%m-%d %H:%M:%S') }}
+        Mode: {{ states('alarm_control_panel.home_alarm') }}
+mode: single
+```
+
+For multiple Teams entries, use the notify entity that belongs to the target
+Team/channel. Each entry can point to a different destination.
 
 ## Testing the Dev Branch
 
