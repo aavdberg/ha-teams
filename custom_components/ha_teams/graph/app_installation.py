@@ -7,8 +7,8 @@ team/user before it can send activity-feed notifications or interactive
 bot messages (``/teams/{team-id}/installedApps``,
 ``/users/{user-id}/teamwork/installedApps``).
 
-See ``C:\\temp\\skill-ha-teams.md`` and ``voorstel.md`` sections on Bot
-Transport / Activity Feed Transport for the deferred design.
+See "Deferred Features" in ``.github/copilot-instructions.md`` for why the
+Bot Framework and Activity Feed transports were postponed.
 """
 
 from __future__ import annotations

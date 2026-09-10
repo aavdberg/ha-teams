@@ -78,11 +78,11 @@ tests/                            # Mirrors the package layout above
 
 > **Note on `graph/activity.py`, `graph/app_installation.py`, `renderers/activity.py`,
 > `bot/*`, `coordinator.py`, `repairs.py`:** these are intentional, currently-empty
-> placeholder modules (docstring only, no dead code) that reserve the package layout
-> proposed in `voorstel.md` for features deliberately deferred (Bot Framework
-> interactive cards, Activity Feed notifications, polling/repairs). Implement inside
-> them rather than reshaping the package again — see the local `skill-ha-teams.md`
-> work log for the full rationale on what was deferred and why.
+> placeholder modules (docstring only, no dead code) that reserve a home for features
+> deliberately deferred from the initial scope — a Bot Framework transport
+> (interactive Adaptive Card actions), Graph Activity Feed notifications, and future
+> polling/repair needs. See "Deferred Features" below for the full rationale.
+> Implement inside them rather than reshaping the package again.
 
 ---
 
@@ -273,12 +273,29 @@ When promoting changes from `dev` to `main` for a release:
 
 ---
 
-## Known Issues / Quirks
+## Deferred Features
 
-- No official Teams Bot Transport (proactive bot messages, Adaptive Card actions),
-  Activity Feed transport, or config subentries yet — these were deliberately deferred
-  from an early architecture proposal (`voorstel.md`) to keep the initial scope small.
-  See `C:\temp\skill-ha-teams.md` (local, not committed) for the full rationale.
+Features deliberately kept out of scope for now (an early architecture proposal
+covered a much larger surface area; the following was intentionally trimmed to keep
+the initial integration small and reviewable):
+
+- **Bot Framework transport** — proactive bot messages and interactive Adaptive Card
+  actions (e.g. "Acknowledge"/"Snooze" buttons that call back into Home Assistant).
+  Requires registering a separate Bot Framework bot resource, an inbound webhook
+  receiver, and request signature validation. Placeholder modules reserved in `bot/`.
+- **Activity Feed transport** — Microsoft Graph "teamwork activity feed" notifications
+  (`/users/{id}/teamwork/sendActivityNotification`). Requires the app to be installed
+  for the target user/team first. Placeholder modules reserved in `graph/activity.py`,
+  `graph/app_installation.py`, `renderers/activity.py`.
+- **Config subentries / multi-tenant cloud selection / queue & digest notifications** —
+  not implemented; the current config/options flow model (one Team + Channel per
+  config entry) covers the primary use case.
+- `coordinator.py` and `repairs.py` are placeholder modules for future
+  polling/repair-issue needs; not required by the current notify-only integration.
+
+Implement inside the existing placeholder modules rather than reshaping the package
+again when picking any of these up.
+
 - `tests/conftest.py` stubs the `homeassistant.*` modules instead of depending on the
   full `homeassistant` core package, so unit tests only cover pure logic (PKCE math,
   retry classification, Adaptive Card payload building) — not full config-flow/entity

@@ -31,9 +31,9 @@ CONF_CHANNEL_NAME = "channel_name"
 
 DEFAULT_NAME = "Microsoft Teams"
 
-# Adaptive Cards (see "voorstel.md" §9.3): messages can carry a full Adaptive
-# Card as an attachment instead of plain text. 1.5 is broadly supported by
-# Teams desktop/web/mobile at time of writing.
+# Adaptive Cards: messages can carry a full Adaptive Card as an attachment
+# instead of plain text. 1.5 is broadly supported by Teams desktop/web/mobile
+# at time of writing.
 ADAPTIVE_CARD_CONTENT_TYPE = "application/vnd.microsoft.card.adaptive"
 DEFAULT_ADAPTIVE_CARD_VERSION = "1.5"
 
@@ -41,8 +41,8 @@ SERVICE_SEND_CARD = "send_card"
 ATTR_CARD = "card"
 ATTR_CONFIG_ENTRY_ID = "config_entry_id"
 
-# Graph API resiliency (see "voorstel.md" §12): retry 429/5xx with backoff,
-# never retry 4xx auth/permission errors.
+# Graph API resiliency: retry 429/5xx with backoff, never retry 4xx
+# auth/permission errors.
 MAX_RETRY_ATTEMPTS = 4
 RETRY_BACKOFF_BASE_SECONDS = 1.0
 RETRY_BACKOFF_MAX_SECONDS = 30.0

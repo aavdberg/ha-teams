@@ -73,10 +73,10 @@ class GraphHttpClient:
     async def _request(self, method: str, path: str, **kwargs: Any) -> Any:
         """Perform a Graph API request with retry/backoff for transient errors.
 
-        See "voorstel.md" section 12: retries HTTP 429 (respecting
-        ``Retry-After``) and 5xx with exponential backoff + jitter, up to
-        ``MAX_RETRY_ATTEMPTS``. HTTP 401/403 are raised immediately as
-        ``GraphAuthError`` (no retry) so the caller can trigger reauth.
+        Retries HTTP 429 (respecting ``Retry-After``) and 5xx with
+        exponential backoff + jitter, up to ``MAX_RETRY_ATTEMPTS``. HTTP
+        401/403 are raised immediately as ``GraphAuthError`` (no retry) so
+        the caller can trigger reauth.
         """
         await self._oauth_session.async_ensure_token_valid()
         access_token = self._oauth_session.token["access_token"]

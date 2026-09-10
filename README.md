@@ -168,11 +168,11 @@ tests/                       # pytest unit tests (mirrors the package layout abo
 ```
 
 The `graph/`, `renderers/`, and `bot/` placeholder modules exist now so the
-integration can grow into the transports described in `voorstel.md` (Bot
-Framework interactive cards, Activity Feed notifications) without another
-restructuring pass later — see
-[`.github/copilot-instructions.md`](.github/copilot-instructions.md) and the
-local `skill-ha-teams.md` work log for what's deferred and why.
+integration can grow into features deliberately deferred for now — a Bot
+Framework transport (interactive Adaptive Card actions) and Graph Activity
+Feed notifications — without another restructuring pass later. See
+[`.github/copilot-instructions.md`](.github/copilot-instructions.md) for
+what's deferred and why.
 
 ## Status
 
