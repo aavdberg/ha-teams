@@ -24,12 +24,16 @@ from .const import (
     CONF_TEAM_ID,
     CONF_TEAM_NAME,
     CONF_TENANT_ID,
+    CONF_TRANSPORT,
+    DEFAULT_TRANSPORT,
     DOMAIN,
     OAUTH2_AUTHORIZE_TEMPLATE,
     OAUTH2_TOKEN_TEMPLATE,
+    TRANSPORT_LABELS,
 )
 from .graph import TeamsGraphApiClient
 from .tenant_store import async_get_tenant, async_set_tenant
+from .transports import normalize_transport, transport_label
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -45,11 +49,27 @@ class TeamsOAuth2FlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler,
         super().__init__()
         self._tenant: str = "common"
         self._tenant_confirmed = False
+        self._transport = DEFAULT_TRANSPORT
 
     @property
     def logger(self) -> logging.Logger:
         """Return the logger used by the OAuth2 base flow."""
         return _LOGGER
+
+    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> Any:
+        """Select the notification transport for this config entry."""
+        if user_input is not None:
+            self._transport = normalize_transport(user_input.get(CONF_TRANSPORT))
+            return await self.async_step_pick_implementation()
+
+        return self.async_show_form(
+            step_id="user",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_TRANSPORT, default=DEFAULT_TRANSPORT): vol.In(TRANSPORT_LABELS),
+                }
+            ),
+        )
 
     async def async_step_auth(self, user_input: dict[str, Any] | None = None) -> Any:
         """Ask for the tenant after credentials are selected, before Microsoft login."""
@@ -76,6 +96,7 @@ class TeamsOAuth2FlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler,
         Triggered by ``ConfigEntryAuthFailed`` raised in ``__init__.py`` when
         token refresh fails (e.g. the user revoked consent in Entra ID).
         """
+        self._transport = normalize_transport(entry_data.get(CONF_TRANSPORT))
         if auth_domain := entry_data.get("auth_implementation"):
             self._tenant = await async_get_tenant(self.hass, auth_domain)
         return await self.async_step_reauth_confirm()
@@ -95,8 +116,11 @@ class TeamsOAuth2FlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler,
         """
         if self.source == SOURCE_REAUTH:
             reauth_entry = self._get_reauth_entry()
-            return self.async_update_reload_and_abort(reauth_entry, data=data)
-        return self.async_create_entry(title="Microsoft Teams", data=data)
+            return self.async_update_reload_and_abort(reauth_entry, data={**data, CONF_TRANSPORT: self._transport})
+        return self.async_create_entry(
+            title=f"Microsoft Teams - {transport_label(self._transport)}",
+            data={**data, CONF_TRANSPORT: self._transport},
+        )
 
     @staticmethod
     @callback

@@ -72,20 +72,39 @@ Click the button above, or manually:
 [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=ha_teams)
 
 1. **Settings → Devices & services → Add integration → Microsoft Teams.**
-2. **Tenant**: if your app registration is single-tenant ("Accounts in
+2. **Transport**: choose **Microsoft Graph (send as signed-in user)**.
+   This is the current working transport and sends channel messages as the
+   Microsoft account you authenticate with. The integration stores this per
+   config entry, so you can add more Microsoft Teams entries later for other
+   transports or destinations.
+3. **Tenant**: if your app registration is single-tenant ("Accounts in
    this organizational directory only", step 1 above), enter your
    Microsoft Entra **tenant ID** or verified domain (e.g.
    `contoso.onmicrosoft.com`) — find it on the Entra ID **Overview** page.
    Leave the default `common` if your app registration is multi-tenant or
    supports personal Microsoft accounts. Getting this wrong causes a
    `AADSTS50194` sign-in error; you can safely retry the flow to correct it.
-3. Sign in with the Microsoft account that is a member of the target Team.
-4. Home Assistant lists the Teams/Channels you belong to — pick a Team,
+4. Sign in with the Microsoft account that is a member of the target Team.
+5. Home Assistant lists the Teams/Channels you belong to — pick a Team,
    then a Channel. If listing fails (e.g. missing admin consent), you can
    paste the Team ID / Channel ID manually (found via *"Get link to
    channel"* in Teams).
-5. Use **Options** on the integration entry any time to change the
+6. Use **Options** on the integration entry any time to change the
    destination channel.
+
+### Multiple transports / entries
+
+`ha-teams` is designed around **one transport mode per config entry**. Add
+the integration multiple times if you want separate Teams destinations or,
+later, different sender types side by side.
+
+| Transport | Status | Sender shown in Teams | Notes |
+|---|---|---|---|
+| Microsoft Graph delegated | Supported now | The signed-in Microsoft user | Simple setup via PKCE; current default |
+| Teams bot/app | Planned | A bot/app such as "Home Assistant" | Future Bot Framework transport for app-style sender and interactive cards |
+
+Existing entries without an explicit transport are treated as **Microsoft
+Graph delegated** for backwards compatibility.
 
 ## 5. Send notifications
 

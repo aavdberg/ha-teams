@@ -28,12 +28,21 @@ OAUTH2_SCOPES = [
 ]
 
 CONF_TENANT_ID = "tenant_id"
+CONF_TRANSPORT = "transport"
 CONF_TEAM_ID = "team_id"
 CONF_TEAM_NAME = "team_name"
 CONF_CHANNEL_ID = "channel_id"
 CONF_CHANNEL_NAME = "channel_name"
 
 DEFAULT_NAME = "Microsoft Teams"
+
+TRANSPORT_GRAPH_DELEGATED = "graph_delegated"
+TRANSPORT_TEAMS_BOT = "teams_bot"
+DEFAULT_TRANSPORT = TRANSPORT_GRAPH_DELEGATED
+
+TRANSPORT_LABELS = {
+    TRANSPORT_GRAPH_DELEGATED: "Microsoft Graph (send as signed-in user)",
+}
 
 # Adaptive Cards: messages can carry a full Adaptive Card as an attachment
 # instead of plain text. 1.5 is broadly supported by Teams desktop/web/mobile

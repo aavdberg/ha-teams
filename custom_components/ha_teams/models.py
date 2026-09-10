@@ -14,6 +14,7 @@ class TeamsRuntimeData:
     """Runtime data stored on the config entry."""
 
     client: TeamsGraphApiClient
+    transport: str
     team_id: str
     channel_id: str
 
