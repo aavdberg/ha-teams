@@ -9,7 +9,7 @@ from homeassistant.components.application_credentials import (
 from homeassistant.core import HomeAssistant
 
 from .const import DEFAULT_TENANT, OAUTH2_AUTHORIZE_TEMPLATE, OAUTH2_TOKEN_TEMPLATE
-from .pkce_oauth2 import MicrosoftGraphPkceOAuth2Implementation
+from .oauth import MicrosoftGraphPkceOAuth2Implementation
 
 
 async def async_get_authorization_server(hass: HomeAssistant) -> AuthorizationServer:

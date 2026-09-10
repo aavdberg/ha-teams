@@ -10,8 +10,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .api import GraphApiError, GraphAuthError
 from .const import DOMAIN
+from .graph import GraphApiError, GraphAuthError
+from .renderers.text import build_text_message
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -45,7 +46,7 @@ class TeamsNotifyEntity(NotifyEntity):
 
     async def async_send_message(self, message: str, title: str | None = None) -> None:
         """Send a message to the configured Teams channel."""
-        text = f"**{title}**\n\n{message}" if title else message
+        text = build_text_message(message, title)
         try:
             await self._runtime.client.async_send_channel_message(self._runtime.team_id, self._runtime.channel_id, text)
         except GraphAuthError as err:

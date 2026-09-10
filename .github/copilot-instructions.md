@@ -27,22 +27,43 @@ custom_components/ha_teams/
 ├── __init__.py                # Entry setup/unload, entry.runtime_data, ha_teams.send_card service
 ├── manifest.json               # Integration metadata, version
 ├── const.py                    # Domain, OAuth endpoints/scopes, retry tuning, service/attr names
-├── pkce_oauth2.py               # PKCE-enabled OAuth2 implementation (code_verifier/code_challenge)
+├── models.py                    # TeamsRuntimeData / TeamsConfigEntry dataclasses
+├── oauth.py                      # PKCE-enabled OAuth2 implementation (code_verifier/code_challenge)
 ├── application_credentials.py  # Authorize/token endpoints for the OAuth2 + PKCE flow
-├── api.py                       # Microsoft Graph API client (retry/backoff, Adaptive Cards)
 ├── config_flow.py               # OAuth2 (PKCE) login flow + reauth + team/channel options flow
 ├── notify.py                    # NotifyEntity that posts channel messages
 ├── diagnostics.py               # Redacted diagnostics (tokens, team/channel IDs)
+├── coordinator.py                # Placeholder — future polling coordinator (not used yet)
+├── repairs.py                     # Placeholder — future repair issues (not used yet)
 ├── services.yaml                # ha_teams.send_card service definition
 ├── strings.json                 # Source-of-truth translation strings (English)
-└── translations/
-    └── en.json
+├── translations/
+│   └── en.json
+├── graph/                        # Microsoft Graph API client
+│   ├── __init__.py                # Composes TeamsGraphApiClient from the mixins below
+│   ├── client.py                   # HTTP transport: retry/backoff, GraphApiError/GraphAuthError
+│   ├── discovery.py                 # List joined Teams / Channels
+│   ├── messages.py                   # Send channel message / Adaptive Card
+│   ├── activity.py                    # Placeholder — future "activity feed" notifications
+│   └── app_installation.py             # Placeholder — future app/bot installation for a team
+├── renderers/                     # Turn HA notification data into Graph payloads
+│   ├── __init__.py
+│   ├── text.py                     # Plain-text (title + message -> Markdown)
+│   ├── adaptive_card.py              # Adaptive Card chatMessage payload builder
+│   └── activity.py                    # Placeholder — future activity-feed payload renderer
+└── bot/                           # Placeholder — future Bot Framework transport (interactive cards)
+    ├── __init__.py
+    ├── client.py                    # Placeholder — Bot Connector REST client
+    ├── callbacks.py                   # Placeholder — inbound card-action webhook handler
+    └── validation.py                   # Placeholder — inbound request/signature validation
 
-tests/
+tests/                            # Mirrors the package layout above
 ├── conftest.py                  # Stubs homeassistant.* modules (no full HA core dependency)
-├── test_pkce_oauth2.py          # PKCE code_verifier/code_challenge unit tests
-├── test_api.py                  # Retry classification + Adaptive Card payload unit tests
-└── test_api_client.py           # TeamsGraphApiClient behaviour with a fake aiohttp session
+├── test_oauth.py                 # PKCE code_verifier/code_challenge unit tests
+├── test_graph_client.py          # Retry classification unit tests
+├── test_graph_messages.py        # TeamsGraphApiClient behaviour with a fake aiohttp session
+├── test_renderers_adaptive_card.py # Adaptive Card payload unit tests
+└── test_renderers_text.py        # Plain-text renderer unit tests
 
 .github/
 ├── workflows/
@@ -55,6 +76,14 @@ tests/
 └── copilot-instructions.md    # THIS FILE — update when architecture/auth model changes
 ```
 
+> **Note on `graph/activity.py`, `graph/app_installation.py`, `renderers/activity.py`,
+> `bot/*`, `coordinator.py`, `repairs.py`:** these are intentional, currently-empty
+> placeholder modules (docstring only, no dead code) that reserve the package layout
+> proposed in `voorstel.md` for features deliberately deferred (Bot Framework
+> interactive cards, Activity Feed notifications, polling/repairs). Implement inside
+> them rather than reshaping the package again — see the local `skill-ha-teams.md`
+> work log for the full rationale on what was deferred and why.
+
 ---
 
 ## Authentication Model
@@ -64,7 +93,7 @@ tests/
 - No client secret required — the Entra ID app registration is a "public client"
   ("Allow public client flows" = Yes).
 - PKCE `code_verifier`/`code_challenge` (S256) generated per authorization attempt in
-  `pkce_oauth2.MicrosoftGraphPkceOAuth2Implementation`.
+  `oauth.MicrosoftGraphPkceOAuth2Implementation`.
 - Delegated Graph scopes: `openid profile offline_access ChannelMessage.Send
   Team.ReadBasic.All Channel.ReadBasic.All`.
 - Team/channel selection happens in the **Options flow** (`config_flow.py`), not the
@@ -73,14 +102,19 @@ tests/
 - Token refresh failures / revoked consent raise `ConfigEntryAuthFailed`, which starts
   Home Assistant's reauth flow (`async_step_reauth` → `async_step_reauth_confirm`).
 
-## Microsoft Graph API Client (`api.py`)
+## Microsoft Graph API Client (`graph/`)
 
-- Retries HTTP 429 (respecting `Retry-After`) and 5xx with exponential backoff + jitter,
-  up to `MAX_RETRY_ATTEMPTS` (4). Never retries 4xx.
+- `graph/client.py` (`GraphHttpClient`) retries HTTP 429 (respecting `Retry-After`) and
+  5xx with exponential backoff + jitter, up to `MAX_RETRY_ATTEMPTS` (4). Never retries 4xx.
 - HTTP 401/403 raise `GraphAuthError` immediately (no retry) so callers can trigger reauth
   instead of retrying against a permanently broken token.
-- Supports both plain-text channel messages (`async_send_channel_message`) and full
-  Adaptive Cards (`async_send_adaptive_card`, exposed as the `ha_teams.send_card` service).
+- `graph/discovery.py` (`GraphDiscoveryMixin`) lists joined Teams/Channels.
+- `graph/messages.py` (`GraphMessagesMixin`) sends plain-text channel messages
+  (`async_send_channel_message`) and full Adaptive Cards (`async_send_adaptive_card`,
+  exposed as the `ha_teams.send_card` service) via `renderers/adaptive_card.py`.
+- `graph/__init__.py` composes all mixins into the single `TeamsGraphApiClient` used
+  by `__init__.py`/`config_flow.py`/`notify.py`. Add new Graph endpoint groups as their
+  own module + mixin here rather than growing one large file.
 
 ---
 
