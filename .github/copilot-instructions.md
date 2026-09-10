@@ -28,6 +28,7 @@ custom_components/ha_teams/
 ├── manifest.json               # Integration metadata, version
 ├── const.py                    # Domain, OAuth endpoints/scopes, retry tuning, service/attr names
 ├── models.py                    # TeamsRuntimeData / TeamsConfigEntry dataclasses
+├── transports.py                # Per-entry transport helpers (Graph now, Bot Framework planned)
 ├── oauth.py                      # PKCE-enabled OAuth2 implementation (code_verifier/code_challenge)
 ├── application_credentials.py  # Authorize/token endpoints for the OAuth2 + PKCE flow
 ├── config_flow.py               # OAuth2 (PKCE) login flow + reauth + team/channel options flow
@@ -64,7 +65,8 @@ tests/                            # Mirrors the package layout above
 ├── test_graph_client.py          # Retry classification unit tests
 ├── test_graph_messages.py        # TeamsGraphApiClient behaviour with a fake aiohttp session
 ├── test_renderers_adaptive_card.py # Adaptive Card payload unit tests
-└── test_renderers_text.py        # Plain-text renderer unit tests
+├── test_renderers_text.py        # Plain-text renderer unit tests
+└── test_transports.py            # Transport-mode default/compatibility tests
 
 .github/
 ├── workflows/
@@ -87,16 +89,25 @@ tests/                            # Mirrors the package layout above
 
 ---
 
-## Authentication Model
+## Authentication and Transport Model
 
 - **OAuth 2.0 Authorization Code Flow + PKCE** against Microsoft identity platform
-  (`https://login.microsoftonline.com/common/oauth2/v2.0/{authorize,token}`).
+  (`https://login.microsoftonline.com/{tenant}/oauth2/v2.0/{authorize,token}`).
+  Tenant values are stored per Home Assistant application credential/auth
+  implementation; never store a single global tenant for the whole integration.
 - No client secret required — the Entra ID app registration is a "public client"
-  ("Allow public client flows" = Yes).
+  ("Allow public client flows" = Yes). Token requests must not send
+  `client_secret`, even if Home Assistant Application Credentials stores a
+  placeholder value.
 - PKCE `code_verifier`/`code_challenge` (S256) generated per authorization attempt in
   `oauth.MicrosoftGraphPkceOAuth2Implementation`.
 - Delegated Graph scopes: `openid profile offline_access ChannelMessage.Send
   Team.ReadBasic.All Channel.ReadBasic.All`.
+- One notification transport mode per config entry. The current supported transport
+  is `graph_delegated`, which sends Teams channel messages through Microsoft Graph
+  as the signed-in user. Add future transports (for example `teams_bot`) as new
+  config-entry transport values rather than replacing the Graph flow or creating a
+  single mixed-mode entry.
 - Team/channel selection happens in the **Options flow** (`config_flow.py`), not the
   initial config flow, so it can reuse the fully-managed `OAuth2Session` tied to the
   real config entry (token refresh/storage already wired up).
