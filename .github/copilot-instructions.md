@@ -171,7 +171,27 @@ Every change — no matter how small — **must** follow these steps in order:
    - If a code fix is needed, push the commit, wait for CI, and re-check.
    - **Resolve** the review conversation threads (using GraphQL `resolveReviewThread` / `resolve_thread` tool).
    - Repeat until all review conversations are resolved.
-9. **Merge** — Once CI passes and all review comments are resolved, merge the PR into `dev`:
+
+   **Merge gate — never skip this:** a PR must **never** be merged until, for
+   every review comment/thread, either (a) the issue was fixed and the thread
+   resolved, or (b) a clear reply comment was posted explaining why no fix is
+   needed, and the thread was then marked resolved. Passing CI is **not**
+   sufficient on its own.
+
+   *If the Copilot review never appears* (e.g. `reviews`/`reviewRequests` stay
+   empty for an extended period): do **not** silently proceed to merge. First
+   rule out a benign, known-non-fatal condition — the review job's own logs
+   showing `content exclusion policy fetch failed ...; proceeding without
+   exclusions` (404) is expected on non-Enterprise/Business accounts (the
+   content-exclusion policy endpoint simply doesn't exist there) and is
+   already handled internally; it is not the reason a review is missing.
+   Re-request the reviewer once
+   (`gh pr edit <N> --add-reviewer Copilot` or re-run the "Request Copilot
+   Code Review" workflow), wait again, and if it still never posts, **ask the
+   user for explicit confirmation before merging** rather than assuming it's
+   safe to proceed.
+9. **Merge** — Once CI passes and all review comments are resolved (see the
+   merge gate above), merge the PR into `dev`:
    ```
    gh pr merge <PR_NUMBER> --squash --delete-branch
    ```
@@ -187,6 +207,10 @@ Every change — no matter how small — **must** follow these steps in order:
 
 **NEVER commit or push directly to `dev` or `main`.**
 Even as admin (bypassed protection), direct pushes skip CI and break the audit trail.
+
+**NEVER merge a PR before the Copilot review is resolved.** Either every
+comment was fixed and its thread resolved, or a justified reply was posted
+and the thread resolved. A green CI run alone is not a merge gate.
 
 ---
 
