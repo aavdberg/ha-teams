@@ -1,6 +1,5 @@
 {
   "name": "ha-teams",
   "render_readme": true,
-  "domains": ["notify"],
   "homeassistant": "2024.6.0"
 }
