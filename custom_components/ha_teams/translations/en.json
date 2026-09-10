@@ -11,6 +11,10 @@
           "team_id": "Team ID",
           "channel_id": "Channel ID"
         }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate Microsoft Teams",
+        "description": "Home Assistant lost access to Microsoft Teams (token expired or consent revoked). Sign in again to restore notifications."
       }
     },
     "abort": {

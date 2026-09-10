@@ -13,7 +13,9 @@ from typing import Any
 
 import voluptuous as vol
 
-from homeassistant.config_entries import ConfigEntry, OptionsFlow
+from collections.abc import Mapping
+
+from homeassistant.config_entries import SOURCE_REAUTH, ConfigEntry, OptionsFlow
 from homeassistant.core import callback
 from homeassistant.helpers import aiohttp_client, config_entry_oauth2_flow
 
@@ -36,13 +38,32 @@ class TeamsOAuth2FlowHandler(
         """Return the logger used by the OAuth2 base flow."""
         return _LOGGER
 
+    async def async_step_reauth(self, entry_data: Mapping[str, Any]) -> Any:
+        """Start a reauthentication flow when the refresh token is revoked.
+
+        Triggered by ``ConfigEntryAuthFailed`` raised in ``__init__.py`` when
+        token refresh fails (e.g. the user revoked consent in Entra ID).
+        """
+        return await self.async_step_reauth_confirm()
+
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> Any:
+        """Ask the user to confirm before re-running the PKCE login."""
+        if user_input is None:
+            return self.async_show_form(step_id="reauth_confirm")
+        return await self.async_step_user()
+
     async def async_oauth_create_entry(self, data: dict[str, Any]) -> Any:
-        """Create the config entry once the PKCE login succeeds.
+        """Create (or update, on reauth) the config entry after PKCE login.
 
         Team/channel selection is deferred to the options flow so it can
         reuse the fully-managed OAuth2Session (token refresh, storage, etc.)
         that only exists once the entry is set up.
         """
+        if self.source == SOURCE_REAUTH:
+            reauth_entry = self._get_reauth_entry()
+            return self.async_update_reload_and_abort(reauth_entry, data=data)
         return self.async_create_entry(title="Microsoft Teams", data=data)
 
     @staticmethod

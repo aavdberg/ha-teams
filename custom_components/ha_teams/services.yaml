@@ -1,0 +1,25 @@
+send_card:
+  name: Send Adaptive Card
+  description: >-
+    Send a full Adaptive Card (rich, interactive layout) to the Teams
+    channel configured on a ha_teams config entry, instead of a plain-text
+    message.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: The ha_teams config entry (account/channel) to send through.
+      required: true
+      selector:
+        config_entry:
+          integration: ha_teams
+    card:
+      name: Adaptive Card
+      description: >-
+        The raw Adaptive Card JSON (type, body, actions, ...). If "version"
+        is omitted, a supported default version is used.
+      required: true
+      example: >-
+        {"type": "AdaptiveCard", "version": "1.5", "body": [{"type":
+        "TextBlock", "text": "Pump active"}]}
+      selector:
+        object: {}

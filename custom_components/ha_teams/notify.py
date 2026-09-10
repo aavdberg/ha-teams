@@ -2,14 +2,14 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
 
 from homeassistant.components.notify import NotifyEntity, NotifyEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .api import GraphApiError
+from .api import GraphApiError, GraphAuthError
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -49,6 +49,10 @@ class TeamsNotifyEntity(NotifyEntity):
             await self._runtime.client.async_send_channel_message(
                 self._runtime.team_id, self._runtime.channel_id, text
             )
+        except GraphAuthError as err:
+            # Token invalid/revoked: let Home Assistant surface a reauth
+            # flow instead of silently failing on every future call.
+            raise ConfigEntryAuthFailed("Microsoft Teams authentication failed") from err
         except GraphApiError as err:
             _LOGGER.error("Failed to send Teams message: %s", err)
             raise
