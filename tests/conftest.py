@@ -7,6 +7,7 @@ time, so the real integration modules can be imported and their pure logic
 (PKCE math, retry classification, Adaptive Card payload building) exercised
 directly and fast, inside the WSL test container.
 """
+
 from __future__ import annotations
 
 import sys
@@ -30,16 +31,16 @@ def _install_homeassistant_stubs() -> None:
 
     core = _ensure_module("homeassistant.core")
 
-    class HomeAssistant:  # noqa: D401 - simple stub
+    class HomeAssistant:
         """Stand-in for homeassistant.core.HomeAssistant."""
 
-    class ServiceCall:  # noqa: D401 - simple stub
+    class ServiceCall:
         """Stand-in for homeassistant.core.ServiceCall."""
 
         def __init__(self, data: dict | None = None) -> None:
             self.data = data or {}
 
-    def callback(func):  # noqa: D401 - passthrough decorator stub
+    def callback(func):
         return func
 
     core.HomeAssistant = HomeAssistant
@@ -48,10 +49,10 @@ def _install_homeassistant_stubs() -> None:
 
     config_entries = _ensure_module("homeassistant.config_entries")
 
-    class ConfigEntry:  # noqa: D401 - simple stub
+    class ConfigEntry:
         """Stand-in for homeassistant.config_entries.ConfigEntry."""
 
-    class OptionsFlow:  # noqa: D401 - simple stub
+    class OptionsFlow:
         """Stand-in for homeassistant.config_entries.OptionsFlow."""
 
     config_entries.ConfigEntry = ConfigEntry
@@ -60,7 +61,7 @@ def _install_homeassistant_stubs() -> None:
 
     const = _ensure_module("homeassistant.const")
 
-    class Platform:  # noqa: D401 - simple stub
+    class Platform:
         NOTIFY = "notify"
 
     const.Platform = Platform
@@ -88,7 +89,7 @@ def _install_homeassistant_stubs() -> None:
 
     oauth2_flow = _ensure_module("homeassistant.helpers.config_entry_oauth2_flow")
 
-    class OAuth2Session:  # noqa: D401 - simple stub, replaced by tests via monkeypatch
+    class OAuth2Session:
         def __init__(self, hass=None, entry=None, implementation=None) -> None:
             self.hass = hass
             self.entry = entry
@@ -98,7 +99,7 @@ def _install_homeassistant_stubs() -> None:
         async def async_ensure_token_valid(self) -> None:
             return None
 
-    class LocalOAuth2Implementation:  # noqa: D401 - simple stub
+    class LocalOAuth2Implementation:
         def __init__(self, hass, domain, client_id, client_secret, authorize_url, token_url):
             self.hass = hass
             self.domain = domain
@@ -110,7 +111,7 @@ def _install_homeassistant_stubs() -> None:
         async def _token_request(self, data: dict) -> dict:
             return {}
 
-    class AbstractOAuth2FlowHandler:  # noqa: D401 - simple stub
+    class AbstractOAuth2FlowHandler:
         def __init_subclass__(cls, domain: str | None = None, **kwargs) -> None:
             super().__init_subclass__(**kwargs)
             cls._domain = domain
@@ -125,17 +126,17 @@ def _install_homeassistant_stubs() -> None:
 
     app_credentials = _ensure_module("homeassistant.components.application_credentials")
 
-    class ClientCredential:  # noqa: D401 - simple stub
+    class ClientCredential:
         def __init__(self, client_id: str, client_secret: str | None = None) -> None:
             self.client_id = client_id
             self.client_secret = client_secret
 
-    class AuthorizationServer:  # noqa: D401 - simple stub
+    class AuthorizationServer:
         def __init__(self, authorize_url: str, token_url: str) -> None:
             self.authorize_url = authorize_url
             self.token_url = token_url
 
-    class AuthImplementation(LocalOAuth2Implementation):  # noqa: D401 - simple stub
+    class AuthImplementation(LocalOAuth2Implementation):
         pass
 
     app_credentials.ClientCredential = ClientCredential
@@ -154,10 +155,10 @@ def _install_homeassistant_stubs() -> None:
 
     notify = _ensure_module("homeassistant.components.notify")
 
-    class NotifyEntity:  # noqa: D401 - simple stub
+    class NotifyEntity:
         pass
 
-    class NotifyEntityDescription:  # noqa: D401 - simple stub
+    class NotifyEntityDescription:
         def __init__(self, key: str, name=None) -> None:
             self.key = key
             self.name = name
@@ -167,7 +168,7 @@ def _install_homeassistant_stubs() -> None:
 
     entity_platform = _ensure_module("homeassistant.helpers.entity_platform")
 
-    class AddEntitiesCallback:  # noqa: D401 - simple stub
+    class AddEntitiesCallback:
         pass
 
     entity_platform.AddEntitiesCallback = AddEntitiesCallback

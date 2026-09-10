@@ -1,4 +1,5 @@
 """Notify platform for Microsoft Teams."""
+
 from __future__ import annotations
 
 import logging
@@ -46,9 +47,7 @@ class TeamsNotifyEntity(NotifyEntity):
         """Send a message to the configured Teams channel."""
         text = f"**{title}**\n\n{message}" if title else message
         try:
-            await self._runtime.client.async_send_channel_message(
-                self._runtime.team_id, self._runtime.channel_id, text
-            )
+            await self._runtime.client.async_send_channel_message(self._runtime.team_id, self._runtime.channel_id, text)
         except GraphAuthError as err:
             # Token invalid/revoked: let Home Assistant surface a reauth
             # flow instead of silently failing on every future call.

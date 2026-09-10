@@ -1,4 +1,5 @@
 """Unit tests for Graph API retry classification and Adaptive Card payloads."""
+
 from __future__ import annotations
 
 import json

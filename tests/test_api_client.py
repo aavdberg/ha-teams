@@ -1,4 +1,5 @@
 """Unit test for the adaptive card version default in the Graph client."""
+
 from __future__ import annotations
 
 import asyncio
@@ -24,7 +25,7 @@ class _FakeResponse:
         self.content_type = "application/json"
         self._json_body = json_body or {}
 
-    async def __aenter__(self) -> "_FakeResponse":
+    async def __aenter__(self) -> _FakeResponse:
         return self
 
     async def __aexit__(self, *exc_info) -> None:
@@ -53,11 +54,7 @@ def test_send_adaptive_card_defaults_version_when_missing() -> None:
     oauth_session = _FakeOAuthSession()
     client = TeamsGraphApiClient(session, oauth_session)
 
-    asyncio.run(
-        client.async_send_adaptive_card(
-            "team-1", "channel-1", {"type": "AdaptiveCard", "body": []}
-        )
-    )
+    asyncio.run(client.async_send_adaptive_card("team-1", "channel-1", {"type": "AdaptiveCard", "body": []}))
 
     sent_payload = session.last_request["json"]
     card_sent = json.loads(sent_payload["attachments"][0]["content"])
@@ -70,9 +67,7 @@ def test_send_adaptive_card_keeps_explicit_version() -> None:
     client = TeamsGraphApiClient(session, oauth_session)
 
     asyncio.run(
-        client.async_send_adaptive_card(
-            "team-1", "channel-1", {"type": "AdaptiveCard", "version": "1.4", "body": []}
-        )
+        client.async_send_adaptive_card("team-1", "channel-1", {"type": "AdaptiveCard", "version": "1.4", "body": []})
     )
 
     sent_payload = session.last_request["json"]

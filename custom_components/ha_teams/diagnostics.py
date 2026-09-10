@@ -3,6 +3,7 @@
 Redacts anything sensitive (tokens, IDs) so users can safely attach
 diagnostics to bug reports. See "voorstel.md" section 14.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -23,9 +24,7 @@ TO_REDACT = {
 }
 
 
-async def async_get_config_entry_diagnostics(
-    hass: HomeAssistant, entry: ConfigEntry
-) -> dict[str, Any]:
+async def async_get_config_entry_diagnostics(hass: HomeAssistant, entry: ConfigEntry) -> dict[str, Any]:
     """Return diagnostics for a config entry, with secrets/IDs redacted."""
     return {
         "entry_data": async_redact_data(dict(entry.data), TO_REDACT),

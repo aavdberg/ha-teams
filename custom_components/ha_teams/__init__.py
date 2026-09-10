@@ -1,14 +1,14 @@
 """The Microsoft Teams integration."""
+
 from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
 
 import voluptuous as vol
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant, ServiceCall, callback
+from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import ConfigEntryAuthFailed, ServiceValidationError
 from homeassistant.helpers import aiohttp_client, config_entry_oauth2_flow
 
@@ -55,29 +55,23 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 
         runtime: TeamsRuntimeData = entry.runtime_data
         try:
-            await runtime.client.async_send_adaptive_card(
-                runtime.team_id, runtime.channel_id, call.data[ATTR_CARD]
-            )
+            await runtime.client.async_send_adaptive_card(runtime.team_id, runtime.channel_id, call.data[ATTR_CARD])
         except GraphAuthError as err:
             raise ConfigEntryAuthFailed("Microsoft Teams authentication failed") from err
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_SEND_CARD, _async_handle_send_card, schema=SERVICE_SEND_CARD_SCHEMA
-    )
+    hass.services.async_register(DOMAIN, SERVICE_SEND_CARD, _async_handle_send_card, schema=SERVICE_SEND_CARD_SCHEMA)
     return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: TeamsConfigEntry) -> bool:
     """Set up Microsoft Teams from a config entry."""
-    implementation = await config_entry_oauth2_flow.async_get_config_entry_implementation(
-        hass, entry
-    )
+    implementation = await config_entry_oauth2_flow.async_get_config_entry_implementation(hass, entry)
     oauth_session = config_entry_oauth2_flow.OAuth2Session(hass, entry, implementation)
     try:
         # Ensures the access token is valid (refreshing via the token
         # endpoint, no user interaction) before the first API call is made.
         await oauth_session.async_ensure_token_valid()
-    except Exception as err:  # noqa: BLE001
+    except Exception as err:
         # Token refresh failed (e.g. the user revoked consent in Entra ID,
         # or the refresh token expired). Ask Home Assistant to start the
         # reauth flow rather than leaving the entry in a broken state.

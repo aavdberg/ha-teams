@@ -7,6 +7,7 @@ request. Microsoft Entra ID (Azure AD) app registrations configured as a
 even for confidential clients is best practice. This module layers PKCE on
 top of the standard implementation without needing a client secret.
 """
+
 from __future__ import annotations
 
 import base64

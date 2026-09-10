@@ -89,19 +89,60 @@ data:
   message: "Motion detected at {{ now().strftime('%H:%M') }}"
 ```
 
+## Testing the Dev Branch
+
+> **Note:** HACS 2.x no longer supports branch selection in the UI. Use one of the methods below to test the `dev` branch.
+
+### Option A — Manual copy (quickest)
+
+1. In Home Assistant, open **File Editor** or connect via **SSH / Samba**
+2. Copy the folder `custom_components/ha_teams` from the `dev` branch to:
+   ```
+   /config/custom_components/ha_teams/
+   ```
+3. Restart Home Assistant
+
+To download the dev branch as a zip:
+```
+https://github.com/aavdberg/ha-teams/archive/refs/heads/dev.zip
+```
+Extract and copy the `custom_components/ha_teams` folder.
+
+### Option B — HACS beta release (recommended for ongoing testing)
+
+Every push to `dev` automatically creates a **pre-release** tag (e.g. `v0.2.0-beta.1`).
+
+1. In HACS, open the **Microsoft Teams** repository
+2. Select the **⋮ menu → Show details**
+3. Enable **"Show beta releases"** in your HACS settings (⋮ → Settings → Experimental)
+4. The latest dev pre-release will appear as an available update in HACS
+
+### Option C — Git clone via SSH
+
+```bash
+cd /config/custom_components
+git clone -b dev https://github.com/aavdberg/ha-teams.git ha_teams_dev
+# Then symlink or copy the inner folder:
+cp -r ha_teams_dev/custom_components/ha_teams ./ha_teams
+```
+
 ## Repository layout
 
 ```
 custom_components/ha_teams/
-  __init__.py               # entry setup/unload, runtime data
-  api.py                    # Microsoft Graph API client
+  __init__.py               # entry setup/unload, runtime data, ha_teams.send_card service
+  api.py                    # Microsoft Graph API client (retry/backoff, Adaptive Cards)
   application_credentials.py# authorize/token endpoints for the OAuth2 flow
-  config_flow.py            # OAuth2 (PKCE) flow + team/channel options flow
-  const.py                  # domain, scopes, endpoints
+  config_flow.py            # OAuth2 (PKCE) flow + reauth + team/channel options flow
+  const.py                  # domain, scopes, endpoints, retry tuning
+  diagnostics.py            # redacted diagnostics (tokens, team/channel IDs)
   manifest.json
   notify.py                 # notify platform entity
   pkce_oauth2.py            # PKCE-enabled OAuth2 implementation
+  services.yaml             # ha_teams.send_card service definition
   strings.json / translations/en.json
+
+tests/                       # pytest unit tests (PKCE, retry logic, Adaptive Cards)
 ```
 
 ## Status
@@ -114,3 +155,77 @@ custom HACS repository using the button in step 3 above, or copy
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+---
+
+## Development
+
+### Branching Strategy
+
+```
+feature/* or fix/*
+        │
+        ▼  Pull Request + lint check
+       dev         ← development & testing
+        │
+        ▼  Pull Request + lint check
+      main         ← production (HACS users)
+                      → automatic GitHub Release
+```
+
+| Branch | Purpose | Protected |
+|---|---|---|
+| `main` | Stable production release | ✅ PR required + lint must pass |
+| `dev` | Integration & testing | ✅ PR required + lint must pass |
+| `feature/*` | New functionality | Free — PR to `dev` |
+| `fix/*` | Bug fixes | Free — PR to `dev` |
+| `chore/*` | Non-code changes (docs, CI, repo tooling) | Free — PR to `dev` (or direct to `main` if unrelated to integration) |
+
+### Contributing
+
+1. Branch off `dev`:
+   ```bash
+   git checkout dev
+   git checkout -b feature/my-feature
+   ```
+2. Commit your changes:
+   ```bash
+   git commit -m "feat: description of the change"
+   ```
+3. Push and open a **Pull Request to `dev`**:
+   ```bash
+   git push origin feature/my-feature
+   ```
+4. CI (ruff lint/format, pytest, HACS validation, hassfest, gitleaks) and the
+   Copilot code review run automatically.
+5. When `dev` is stable, a PR to `main` is opened to trigger a release.
+
+### Releases
+
+Every merge to `main` automatically creates a GitHub Release based on the
+`version` field in `manifest.json`. Every push to `dev` creates a beta
+pre-release tag (`v<version>-beta.<N>`) for HACS beta testers.
+Bump the version in `manifest.json` on `dev` before opening a release PR.
+
+### Local Development
+
+```bash
+# Install dev/test dependencies
+pip install ruff -r requirements_test.txt
+
+# Check for lint errors
+ruff check custom_components/
+
+# Check formatting
+ruff format --check custom_components/
+
+# Auto-fix issues
+ruff check --fix custom_components/
+
+# Run the unit test suite
+pytest -v
+```
+
+See [`.github/copilot-instructions.md`](.github/copilot-instructions.md) for
+the full mandatory workflow (plan → issue → branch → PR → CI → review →
+merge → release).

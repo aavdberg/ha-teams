@@ -1,4 +1,5 @@
 """Unit tests for the PKCE (RFC 7636) helpers in pkce_oauth2.py."""
+
 from __future__ import annotations
 
 import base64
@@ -29,11 +30,7 @@ def test_code_verifier_is_random_each_time() -> None:
 
 def test_code_challenge_matches_manual_s256_computation() -> None:
     verifier = "a" * _CODE_VERIFIER_LENGTH
-    expected = (
-        base64.urlsafe_b64encode(hashlib.sha256(verifier.encode("ascii")).digest())
-        .rstrip(b"=")
-        .decode("ascii")
-    )
+    expected = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode("ascii")).digest()).rstrip(b"=").decode("ascii")
     assert _code_challenge(verifier) == expected
 
 

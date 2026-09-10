@@ -6,15 +6,14 @@ The OAuth2 login itself (including PKCE) is handled by
 picking which Team/Channel to post to happens in the Options flow, where we
 already have a working OAuth2Session backed by the real config entry.
 """
+
 from __future__ import annotations
 
 import logging
+from collections.abc import Mapping
 from typing import Any
 
 import voluptuous as vol
-
-from collections.abc import Mapping
-
 from homeassistant.config_entries import SOURCE_REAUTH, ConfigEntry, OptionsFlow
 from homeassistant.core import callback
 from homeassistant.helpers import aiohttp_client, config_entry_oauth2_flow
@@ -25,9 +24,7 @@ from .const import CONF_CHANNEL_ID, CONF_CHANNEL_NAME, CONF_TEAM_ID, CONF_TEAM_N
 _LOGGER = logging.getLogger(__name__)
 
 
-class TeamsOAuth2FlowHandler(
-    config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain=DOMAIN
-):
+class TeamsOAuth2FlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain=DOMAIN):
     """Handle the OAuth2 Authorization Code + PKCE login flow."""
 
     DOMAIN = DOMAIN
@@ -46,9 +43,7 @@ class TeamsOAuth2FlowHandler(
         """
         return await self.async_step_reauth_confirm()
 
-    async def async_step_reauth_confirm(
-        self, user_input: dict[str, Any] | None = None
-    ) -> Any:
+    async def async_step_reauth_confirm(self, user_input: dict[str, Any] | None = None) -> Any:
         """Ask the user to confirm before re-running the PKCE login."""
         if user_input is None:
             return self.async_show_form(step_id="reauth_confirm")
@@ -85,21 +80,17 @@ class TeamsOptionsFlowHandler(OptionsFlow):
     async def _async_get_client(self) -> TeamsGraphApiClient:
         hass = self.hass
         entry = self.config_entry
-        implementation = await config_entry_oauth2_flow.async_get_config_entry_implementation(
-            hass, entry
-        )
+        implementation = await config_entry_oauth2_flow.async_get_config_entry_implementation(hass, entry)
         oauth_session = config_entry_oauth2_flow.OAuth2Session(hass, entry, implementation)
         session = aiohttp_client.async_get_clientsession(hass)
         return TeamsGraphApiClient(session, oauth_session)
 
-    async def async_step_init(
-        self, user_input: dict[str, Any] | None = None
-    ) -> Any:
+    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> Any:
         """Fetch the joined teams and show the selection form."""
         try:
             client = await self._async_get_client()
             self._teams = await client.async_list_joined_teams()
-        except Exception:  # noqa: BLE001
+        except Exception:
             _LOGGER.exception("Failed to list joined Teams")
             self._teams = []
 
@@ -116,9 +107,7 @@ class TeamsOptionsFlowHandler(OptionsFlow):
             data_schema=vol.Schema({vol.Required(CONF_TEAM_ID): vol.In(options)}),
         )
 
-    async def async_step_channel(
-        self, user_input: dict[str, Any] | None = None
-    ) -> Any:
+    async def async_step_channel(self, user_input: dict[str, Any] | None = None) -> Any:
         """Ask the user to pick a Channel within the selected Team."""
         assert self._selected_team_id is not None
         team = next((t for t in self._teams if t["id"] == self._selected_team_id), None)
@@ -137,7 +126,7 @@ class TeamsOptionsFlowHandler(OptionsFlow):
         try:
             client = await self._async_get_client()
             self._channels = await client.async_list_channels(self._selected_team_id)
-        except Exception:  # noqa: BLE001
+        except Exception:
             _LOGGER.exception("Failed to list channels for team %s", self._selected_team_id)
             return await self.async_step_manual_ids()
 
@@ -147,9 +136,7 @@ class TeamsOptionsFlowHandler(OptionsFlow):
             data_schema=vol.Schema({vol.Required(CONF_CHANNEL_ID): vol.In(options)}),
         )
 
-    async def async_step_manual_ids(
-        self, user_input: dict[str, Any] | None = None
-    ) -> Any:
+    async def async_step_manual_ids(self, user_input: dict[str, Any] | None = None) -> Any:
         """Fallback: let the user paste Team/Channel IDs manually.
 
         Useful when the signed-in account has no joined teams visible yet,

@@ -1,4 +1,5 @@
 """Thin Microsoft Graph API client used by the Teams integration."""
+
 from __future__ import annotations
 
 import asyncio
@@ -9,7 +10,6 @@ from typing import Any
 from uuid import uuid4
 
 from aiohttp import ClientSession
-
 from homeassistant.helpers import config_entry_oauth2_flow
 
 from .const import (
@@ -118,16 +118,12 @@ class TeamsGraphApiClient:
                 if resp.status in (401, 403):
                     body = await resp.text()
                     _LOGGER.debug("Graph API auth error %s for %s: %s", resp.status, url, body)
-                    raise GraphAuthError(
-                        f"Graph API authentication/permission error ({resp.status}): {body}"
-                    )
+                    raise GraphAuthError(f"Graph API authentication/permission error ({resp.status}): {body}")
                 if resp.status >= 400:
                     body = await resp.text()
                     if not _should_retry(resp.status) or attempt == MAX_RETRY_ATTEMPTS - 1:
                         _LOGGER.debug("Graph API error %s for %s: %s", resp.status, url, body)
-                        raise GraphApiError(
-                            f"Graph API request failed ({resp.status}): {body}"
-                        )
+                        raise GraphApiError(f"Graph API request failed ({resp.status}): {body}")
                     retry_after = resp.headers.get("Retry-After")
                     delay = float(retry_after) if retry_after else _backoff_delay(attempt)
                     _LOGGER.warning(
@@ -157,9 +153,7 @@ class TeamsGraphApiClient:
         result = await self._request("GET", f"/teams/{team_id}/channels")
         return result.get("value", []) if result else []
 
-    async def async_send_channel_message(
-        self, team_id: str, channel_id: str, message: str
-    ) -> None:
+    async def async_send_channel_message(self, team_id: str, channel_id: str, message: str) -> None:
         """Post a plain-text message to a Teams channel."""
         payload = {"body": {"contentType": "text", "content": message}}
         await self._request(

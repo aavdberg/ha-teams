@@ -1,4 +1,5 @@
 """Application credentials platform for Microsoft Teams (Graph API)."""
+
 from __future__ import annotations
 
 from homeassistant.components.application_credentials import (
@@ -25,9 +26,7 @@ async def async_get_authorization_server(hass: HomeAssistant) -> AuthorizationSe
     )
 
 
-async def async_get_auth_implementation(
-    hass: HomeAssistant, auth_domain: str, credential: ClientCredential
-):
+async def async_get_auth_implementation(hass: HomeAssistant, auth_domain: str, credential: ClientCredential):
     """Return a PKCE-enabled OAuth2 implementation for this integration."""
     server = await async_get_authorization_server(hass)
     return MicrosoftGraphPkceOAuth2Implementation(
