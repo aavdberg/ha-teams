@@ -1,0 +1,53 @@
+{
+  "config": {
+    "step": {
+      "pick_implementation": {
+        "title": "Pick authentication method"
+      },
+      "manual_ids": {
+        "title": "Enter Team and Channel manually",
+        "description": "We couldn't automatically list your Teams/Channels. You can find the Team ID and Channel ID in the Teams desktop app via the \"...\" menu on a channel -> Get link to channel; the link contains both IDs.",
+        "data": {
+          "team_id": "Team ID",
+          "channel_id": "Channel ID"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "This account is already configured.",
+      "oauth_error": "Received invalid token data.",
+      "oauth_timeout": "Authentication timed out, please try again.",
+      "oauth_unauthorized": "Authentication failed, please try again.",
+      "oauth_failed": "Error while obtaining access token.",
+      "missing_configuration": "The integration is not configured. Please follow the documentation.",
+      "authorize_url_timeout": "Timeout generating authorize URL.",
+      "no_url_available": "No URL available. For information about this error, check the help section."
+    },
+    "create_entry": {
+      "default": "Successfully authenticated with Microsoft Teams."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Select a Team",
+        "data": {
+          "team_id": "Team"
+        }
+      },
+      "channel": {
+        "title": "Select a Channel",
+        "data": {
+          "channel_id": "Channel"
+        }
+      },
+      "manual_ids": {
+        "title": "Enter Team and Channel manually",
+        "data": {
+          "team_id": "Team ID",
+          "channel_id": "Channel ID"
+        }
+      }
+    }
+  }
+}
