@@ -45,7 +45,7 @@ body:
     id: design-notes
     attributes:
       label: Design notes
-      description: Include API references, Home Assistant examples, Teams screenshots, or constraints if you have them.
+      description: Include API references, Home Assistant examples, Teams screenshots, or constraints if you have them. Redact personal data, tenant-private values, team/channel names, message content, and secrets from screenshots or attachments.
   - type: textarea
     id: risks
     attributes:
