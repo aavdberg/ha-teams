@@ -173,6 +173,11 @@ different if you renamed the integration entry or added multiple Teams
 entries. Check **Settings → Devices & services → Microsoft Teams →
 Entities** or **Developer Tools → States** for the exact entity ID.
 
+Before sending a test message, make sure the integration entry has a
+destination configured: open **Settings → Devices & services → Microsoft
+Teams → Configure** and select the target Team and Channel. Without this,
+Home Assistant cannot know where to post the message.
+
 ### Basic notification
 
 ```yaml
