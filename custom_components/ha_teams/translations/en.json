@@ -1,6 +1,20 @@
 {
   "config": {
     "step": {
+      "user": {
+        "title": "Notification transport",
+        "description": "Choose how this Microsoft Teams config entry sends notifications. You can add this integration multiple times later to use another transport or destination side by side.",
+        "data": {
+          "transport": "Transport"
+        }
+      },
+      "tenant": {
+        "title": "Microsoft Entra tenant",
+        "description": "Enter your Microsoft Entra (Azure AD) tenant ID or domain (e.g. `contoso.onmicrosoft.com`) if your app registration is single-tenant (\"Accounts in this organizational directory only\"). Leave the default `common` if it's multi-tenant or supports personal Microsoft accounts.",
+        "data": {
+          "tenant_id": "Tenant ID / domain (or common/organizations/consumers)"
+        }
+      },
       "pick_implementation": {
         "title": "Pick authentication method"
       },

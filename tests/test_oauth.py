@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import re
+from typing import Any
 
 from custom_components.ha_teams.oauth import (
     _CODE_VERIFIER_LENGTH,
@@ -75,3 +76,71 @@ def test_implementation_constructor_matches_ha_core_auth_implementation_signatur
     assert impl.client_id == "client-id"
     assert impl.authorize_url == server.authorize_url
     assert impl.token_url == server.token_url
+
+
+class _FakeTokenResponse:
+    def raise_for_status(self) -> None:
+        return None
+
+    async def json(self) -> dict[str, Any]:
+        return {"access_token": "access-token", "expires_in": 3600}
+
+
+class _FakeTokenSession:
+    def __init__(self) -> None:
+        self.posted_data: dict[str, Any] | None = None
+
+    async def post(self, url: str, data: dict[str, Any]) -> _FakeTokenResponse:
+        self.posted_url = url
+        self.posted_data = dict(data)
+        return _FakeTokenResponse()
+
+
+def _make_implementation_with_placeholder_secret():
+    from homeassistant.components.application_credentials import (
+        AuthorizationServer,
+        ClientCredential,
+    )
+    from homeassistant.core import HomeAssistant
+
+    from custom_components.ha_teams.oauth import MicrosoftGraphPkceOAuth2Implementation
+
+    server = AuthorizationServer(
+        authorize_url="https://login.microsoftonline.com/tenant-id/oauth2/v2.0/authorize",
+        token_url="https://login.microsoftonline.com/tenant-id/oauth2/v2.0/token",
+    )
+    credential = ClientCredential(client_id="client-id", client_secret="placeholder-secret")
+    return MicrosoftGraphPkceOAuth2Implementation(HomeAssistant(), "ha_teams", credential, server)
+
+
+async def test_authorization_code_token_request_omits_placeholder_client_secret(monkeypatch) -> None:
+    """Public-client PKCE token exchange must not send a stored placeholder secret."""
+    from homeassistant.helpers import aiohttp_client
+
+    session = _FakeTokenSession()
+    monkeypatch.setattr(aiohttp_client, "async_get_clientsession", lambda hass: session)
+    impl = _make_implementation_with_placeholder_secret()
+    impl._code_verifier = "verifier"
+
+    await impl.async_resolve_external_data({"code": "code", "state": {"redirect_uri": "https://ha/callback"}})
+
+    assert session.posted_data is not None
+    assert session.posted_data["client_id"] == "client-id"
+    assert session.posted_data["code_verifier"] == "verifier"
+    assert "client_secret" not in session.posted_data
+
+
+async def test_refresh_token_request_omits_placeholder_client_secret(monkeypatch) -> None:
+    """Refresh must also remain a public-client request without client_secret."""
+    from homeassistant.helpers import aiohttp_client
+
+    session = _FakeTokenSession()
+    monkeypatch.setattr(aiohttp_client, "async_get_clientsession", lambda hass: session)
+    impl = _make_implementation_with_placeholder_secret()
+
+    await impl._async_refresh_token({"refresh_token": "refresh-token"})
+
+    assert session.posted_data is not None
+    assert session.posted_data["client_id"] == "client-id"
+    assert session.posted_data["refresh_token"] == "refresh-token"
+    assert "client_secret" not in session.posted_data

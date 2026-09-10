@@ -72,13 +72,98 @@ Click the button above, or manually:
 [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=ha_teams)
 
 1. **Settings → Devices & services → Add integration → Microsoft Teams.**
-2. Sign in with the Microsoft account that is a member of the target Team.
-3. Home Assistant lists the Teams/Channels you belong to — pick a Team,
+2. **Transport**: choose **Microsoft Graph (send as signed-in user)**.
+   This is the current working transport and sends channel messages as the
+   Microsoft account you authenticate with. The integration stores this per
+   config entry, so you can add more Microsoft Teams entries later for other
+   transports or destinations.
+3. **Tenant**: if your app registration is single-tenant ("Accounts in
+   this organizational directory only", step 1 above), enter your
+   Microsoft Entra **tenant ID** or verified domain (e.g.
+   `contoso.onmicrosoft.com`) — find it on the Entra ID **Overview** page.
+   Leave the default `common` if your app registration is multi-tenant or
+   supports personal Microsoft accounts. Getting this wrong causes a
+   `AADSTS50194` sign-in error; you can safely retry the flow to correct it.
+4. Sign in with the Microsoft account that is a member of the target Team.
+5. Home Assistant lists the Teams/Channels you belong to — pick a Team,
    then a Channel. If listing fails (e.g. missing admin consent), you can
    paste the Team ID / Channel ID manually (found via *"Get link to
    channel"* in Teams).
-4. Use **Options** on the integration entry any time to change the
+6. Use **Options** on the integration entry any time to change the
    destination channel.
+
+### Multiple transports / entries
+
+`ha-teams` is designed around **one transport mode per config entry**. Add
+the integration multiple times if you want separate Teams destinations or,
+later, different sender types side by side.
+
+| Transport | Status | Sender shown in Teams | Notes |
+|---|---|---|---|
+| Microsoft Graph delegated | Supported now | The signed-in Microsoft user | Simple setup via PKCE; current default |
+| Teams bot/app | Planned | A bot/app such as "Home Assistant" | Future Bot Framework transport for app-style sender and interactive cards |
+
+Existing entries without an explicit transport are treated as **Microsoft
+Graph delegated** for backwards compatibility.
+
+### Future Teams bot/app transport setup
+
+The **Teams bot/app** transport is not implemented yet, but the integration
+is structured so it can be added later as a second transport mode. This is
+the path to make messages appear as an app such as **Home Assistant**
+instead of as the signed-in Microsoft user.
+
+At a high level, a Bot Framework transport needs these pieces:
+
+| Piece | Purpose |
+|---|---|
+| Azure Bot / Microsoft app registration | Gives the bot a Microsoft App ID and permission to talk to Teams |
+| Teams app manifest package | Defines the Teams app name, icons, bot ID, scopes, and capabilities |
+| Public callback endpoint | Lets Teams/Bot Framework deliver install events, messages, and future card actions back to Home Assistant |
+| Team installation | Installs the bot/app into the target Team so it is allowed to participate |
+| Conversation reference storage | Lets Home Assistant send proactive notifications to the right Team/channel later |
+
+Suggested Azure/Teams setup when this transport is implemented:
+
+1. In Azure Portal, create an **Azure Bot** resource or equivalent Microsoft
+   Entra app registration for a Bot Framework bot.
+2. Note the bot's **Microsoft App ID**.
+3. Configure the bot's messaging endpoint to point to a public HTTPS URL
+   that can reach Home Assistant. For local Home Assistant installations
+   this normally requires a secure tunnel, reverse proxy, Nabu Casa remote
+   URL, or another HTTPS endpoint that can forward requests to Home
+   Assistant.
+4. Enable the **Microsoft Teams** channel for the bot.
+5. Create a Teams app manifest package (`manifest.json` plus two PNG icons).
+   The manifest must reference the bot's Microsoft App ID and include the
+   scopes where it may run, usually `team` and/or `personal`.
+6. Install/upload that Teams app into the tenant or directly into the target
+   Team.
+7. When the bot is installed or first contacted, capture the Bot Framework
+   conversation reference (service URL, conversation ID, tenant ID, team ID,
+   and channel ID). Home Assistant needs that stored reference for
+   proactive notifications.
+
+What `ha-teams` already has prepared:
+
+- A per-entry `transport` value, so Graph delegated and future bot entries
+  can live side by side.
+- Placeholder modules under `custom_components/ha_teams/bot/` for a future
+  Bot Connector client, inbound callback handling, and request validation.
+- Adaptive Card rendering helpers that can be reused by a future bot
+  sender.
+
+What is still future work:
+
+- Bot Framework authentication and token handling.
+- A Home Assistant webhook endpoint for Bot Framework callbacks.
+- Teams app manifest generation or documentation with exact IDs.
+- Conversation reference capture/storage.
+- A real `teams_bot` sender implementation and UI option.
+
+Until those pieces are implemented, use **Microsoft Graph (send as signed-in
+user)**. It is the only currently selectable transport and requires much
+less Azure setup.
 
 ## 5. Send notifications
 

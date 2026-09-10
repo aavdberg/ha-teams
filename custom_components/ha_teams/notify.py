@@ -13,6 +13,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import DOMAIN
 from .graph import GraphApiError, GraphAuthError
 from .renderers.text import build_text_message
+from .transports import transport_label
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -41,7 +42,7 @@ class TeamsNotifyEntity(NotifyEntity):
             "identifiers": {(DOMAIN, entry.entry_id)},
             "name": entry.title,
             "manufacturer": "Microsoft",
-            "model": "Teams channel",
+            "model": transport_label(getattr(runtime, "transport", None)),
         }
 
     async def async_send_message(self, message: str, title: str | None = None) -> None:

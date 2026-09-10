@@ -10,9 +10,19 @@ from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import ConfigEntryAuthFailed, ServiceValidationError
 from homeassistant.helpers import aiohttp_client, config_entry_oauth2_flow
 
-from .const import ATTR_CARD, ATTR_CONFIG_ENTRY_ID, CONF_CHANNEL_ID, CONF_TEAM_ID, DOMAIN, SERVICE_SEND_CARD
+from .const import (
+    ATTR_CARD,
+    ATTR_CONFIG_ENTRY_ID,
+    CONF_CHANNEL_ID,
+    CONF_TEAM_ID,
+    CONF_TRANSPORT,
+    DOMAIN,
+    SERVICE_SEND_CARD,
+    TRANSPORT_GRAPH_DELEGATED,
+)
 from .graph import GraphAuthError, TeamsGraphApiClient
 from .models import TeamsConfigEntry, TeamsRuntimeData
+from .transports import normalize_transport
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -41,6 +51,8 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
             raise ServiceValidationError(f"Unknown ha_teams config entry: {entry_id}")
 
         runtime: TeamsRuntimeData = entry.runtime_data
+        if runtime.transport != TRANSPORT_GRAPH_DELEGATED:
+            raise ServiceValidationError(f"Unsupported Teams transport for Adaptive Cards: {runtime.transport}")
         try:
             await runtime.client.async_send_adaptive_card(runtime.team_id, runtime.channel_id, call.data[ATTR_CARD])
         except GraphAuthError as err:
@@ -69,8 +81,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: TeamsConfigEntry) -> boo
 
     team_id = entry.options.get(CONF_TEAM_ID) or entry.data.get(CONF_TEAM_ID)
     channel_id = entry.options.get(CONF_CHANNEL_ID) or entry.data.get(CONF_CHANNEL_ID)
+    transport = normalize_transport(entry.data.get(CONF_TRANSPORT))
 
-    entry.runtime_data = TeamsRuntimeData(client=client, team_id=team_id, channel_id=channel_id)
+    entry.runtime_data = TeamsRuntimeData(client=client, transport=transport, team_id=team_id, channel_id=channel_id)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(_async_update_listener))
