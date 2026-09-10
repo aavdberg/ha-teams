@@ -49,11 +49,11 @@ Details:
 
 ## Screenshots or logs
 
-<!-- Add screenshots, config-flow screenshots, Teams output, or redacted logs when useful. -->
+<!-- Add screenshots, config-flow screenshots, Teams output, or logs when useful. Redact personal data, tenant-private values, team/channel/user names, message content, tokens, authorization data, and secrets from screenshots, logs, and PR attachments. -->
 
 ## Security and privacy checklist
 
-- [ ] No Microsoft client secrets, refresh tokens, authorization codes, Home Assistant tokens, tenant-private values, or personal data are committed.
+- [ ] No Microsoft client secrets, refresh tokens, authorization codes, Home Assistant tokens, tenant-private values, or personal data are committed or attached to the PR.
 - [ ] OAuth, PKCE, tenant, and token-handling behavior still avoids storing or sending unnecessary secrets.
 - [ ] Logs and documentation examples use placeholders instead of real tenant, team, channel, or user data.
 
