@@ -3,17 +3,16 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
 
 import voluptuous as vol
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import ConfigEntryAuthFailed, ServiceValidationError
 from homeassistant.helpers import aiohttp_client, config_entry_oauth2_flow
 
-from .api import GraphAuthError, TeamsGraphApiClient
 from .const import ATTR_CARD, ATTR_CONFIG_ENTRY_ID, CONF_CHANNEL_ID, CONF_TEAM_ID, DOMAIN, SERVICE_SEND_CARD
+from .graph import GraphAuthError, TeamsGraphApiClient
+from .models import TeamsConfigEntry, TeamsRuntimeData
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -25,18 +24,6 @@ SERVICE_SEND_CARD_SCHEMA = vol.Schema(
         vol.Required(ATTR_CARD): dict,
     }
 )
-
-
-@dataclass
-class TeamsRuntimeData:
-    """Runtime data stored on the config entry."""
-
-    client: TeamsGraphApiClient
-    team_id: str
-    channel_id: str
-
-
-type TeamsConfigEntry = ConfigEntry[TeamsRuntimeData]
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:

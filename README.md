@@ -131,19 +131,48 @@ cp -r ha_teams_dev/custom_components/ha_teams ./ha_teams
 ```
 custom_components/ha_teams/
   __init__.py               # entry setup/unload, runtime data, ha_teams.send_card service
-  api.py                    # Microsoft Graph API client (retry/backoff, Adaptive Cards)
+  models.py                 # TeamsRuntimeData / TeamsConfigEntry dataclasses
   application_credentials.py# authorize/token endpoints for the OAuth2 flow
   config_flow.py            # OAuth2 (PKCE) flow + reauth + team/channel options flow
   const.py                  # domain, scopes, endpoints, retry tuning
   diagnostics.py            # redacted diagnostics (tokens, team/channel IDs)
+  coordinator.py            # placeholder for a future polling coordinator (not used yet)
+  repairs.py                # placeholder for future repair issues (not used yet)
   manifest.json
   notify.py                 # notify platform entity
-  pkce_oauth2.py            # PKCE-enabled OAuth2 implementation
+  oauth.py                  # PKCE-enabled OAuth2 implementation
   services.yaml             # ha_teams.send_card service definition
   strings.json / translations/en.json
 
-tests/                       # pytest unit tests (PKCE, retry logic, Adaptive Cards)
+  graph/                     # Microsoft Graph API client
+    __init__.py               # composes TeamsGraphApiClient from the mixins below
+    client.py                  # HTTP transport: retry/backoff, GraphApiError/GraphAuthError
+    discovery.py                # list joined Teams / Channels
+    messages.py                  # send channel message / Adaptive Card
+    activity.py                   # placeholder: future "activity feed" notifications
+    app_installation.py            # placeholder: future app/bot installation for a team
+
+  renderers/                  # turn HA notification data into Graph payloads
+    __init__.py
+    text.py                     # plain-text (title + message -> Markdown)
+    adaptive_card.py              # Adaptive Card chatMessage payload builder
+    activity.py                    # placeholder: future activity-feed payload renderer
+
+  bot/                        # placeholder: future Bot Framework transport (interactive cards)
+    __init__.py
+    client.py                    # placeholder: Bot Connector REST client
+    callbacks.py                  # placeholder: inbound card-action webhook handler
+    validation.py                  # placeholder: inbound request/signature validation
+
+tests/                       # pytest unit tests (mirrors the package layout above)
 ```
+
+The `graph/`, `renderers/`, and `bot/` placeholder modules exist now so the
+integration can grow into the transports described in `voorstel.md` (Bot
+Framework interactive cards, Activity Feed notifications) without another
+restructuring pass later — see
+[`.github/copilot-instructions.md`](.github/copilot-instructions.md) and the
+local `skill-ha-teams.md` work log for what's deferred and why.
 
 ## Status
 

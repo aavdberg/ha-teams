@@ -1,4 +1,4 @@
-"""Unit tests for the PKCE (RFC 7636) helpers in pkce_oauth2.py."""
+"""Unit tests for the PKCE (RFC 7636) helpers in oauth.py."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import base64
 import hashlib
 import re
 
-from custom_components.ha_teams.pkce_oauth2 import (
+from custom_components.ha_teams.oauth import (
     _CODE_VERIFIER_LENGTH,
     _code_challenge,
     _generate_code_verifier,
