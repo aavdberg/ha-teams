@@ -27,22 +27,43 @@ custom_components/ha_teams/
 ├── __init__.py                # Entry setup/unload, entry.runtime_data, ha_teams.send_card service
 ├── manifest.json               # Integration metadata, version
 ├── const.py                    # Domain, OAuth endpoints/scopes, retry tuning, service/attr names
-├── pkce_oauth2.py               # PKCE-enabled OAuth2 implementation (code_verifier/code_challenge)
+├── models.py                    # TeamsRuntimeData / TeamsConfigEntry dataclasses
+├── oauth.py                      # PKCE-enabled OAuth2 implementation (code_verifier/code_challenge)
 ├── application_credentials.py  # Authorize/token endpoints for the OAuth2 + PKCE flow
-├── api.py                       # Microsoft Graph API client (retry/backoff, Adaptive Cards)
 ├── config_flow.py               # OAuth2 (PKCE) login flow + reauth + team/channel options flow
 ├── notify.py                    # NotifyEntity that posts channel messages
 ├── diagnostics.py               # Redacted diagnostics (tokens, team/channel IDs)
+├── coordinator.py                # Placeholder — future polling coordinator (not used yet)
+├── repairs.py                     # Placeholder — future repair issues (not used yet)
 ├── services.yaml                # ha_teams.send_card service definition
 ├── strings.json                 # Source-of-truth translation strings (English)
-└── translations/
-    └── en.json
+├── translations/
+│   └── en.json
+├── graph/                        # Microsoft Graph API client
+│   ├── __init__.py                # Composes TeamsGraphApiClient from the mixins below
+│   ├── client.py                   # HTTP transport: retry/backoff, GraphApiError/GraphAuthError
+│   ├── discovery.py                 # List joined Teams / Channels
+│   ├── messages.py                   # Send channel message / Adaptive Card
+│   ├── activity.py                    # Placeholder — future "activity feed" notifications
+│   └── app_installation.py             # Placeholder — future app/bot installation for a team
+├── renderers/                     # Turn HA notification data into Graph payloads
+│   ├── __init__.py
+│   ├── text.py                     # Plain-text (title + message -> Markdown)
+│   ├── adaptive_card.py              # Adaptive Card chatMessage payload builder
+│   └── activity.py                    # Placeholder — future activity-feed payload renderer
+└── bot/                           # Placeholder — future Bot Framework transport (interactive cards)
+    ├── __init__.py
+    ├── client.py                    # Placeholder — Bot Connector REST client
+    ├── callbacks.py                   # Placeholder — inbound card-action webhook handler
+    └── validation.py                   # Placeholder — inbound request/signature validation
 
-tests/
+tests/                            # Mirrors the package layout above
 ├── conftest.py                  # Stubs homeassistant.* modules (no full HA core dependency)
-├── test_pkce_oauth2.py          # PKCE code_verifier/code_challenge unit tests
-├── test_api.py                  # Retry classification + Adaptive Card payload unit tests
-└── test_api_client.py           # TeamsGraphApiClient behaviour with a fake aiohttp session
+├── test_oauth.py                 # PKCE code_verifier/code_challenge unit tests
+├── test_graph_client.py          # Retry classification unit tests
+├── test_graph_messages.py        # TeamsGraphApiClient behaviour with a fake aiohttp session
+├── test_renderers_adaptive_card.py # Adaptive Card payload unit tests
+└── test_renderers_text.py        # Plain-text renderer unit tests
 
 .github/
 ├── workflows/
@@ -55,6 +76,14 @@ tests/
 └── copilot-instructions.md    # THIS FILE — update when architecture/auth model changes
 ```
 
+> **Note on `graph/activity.py`, `graph/app_installation.py`, `renderers/activity.py`,
+> `bot/*`, `coordinator.py`, `repairs.py`:** these are intentional, currently-empty
+> placeholder modules (docstring only, no dead code) that reserve a home for features
+> deliberately deferred from the initial scope — a Bot Framework transport
+> (interactive Adaptive Card actions), Graph Activity Feed notifications, and future
+> polling/repair needs. See "Deferred Features" below for the full rationale.
+> Implement inside them rather than reshaping the package again.
+
 ---
 
 ## Authentication Model
@@ -64,7 +93,7 @@ tests/
 - No client secret required — the Entra ID app registration is a "public client"
   ("Allow public client flows" = Yes).
 - PKCE `code_verifier`/`code_challenge` (S256) generated per authorization attempt in
-  `pkce_oauth2.MicrosoftGraphPkceOAuth2Implementation`.
+  `oauth.MicrosoftGraphPkceOAuth2Implementation`.
 - Delegated Graph scopes: `openid profile offline_access ChannelMessage.Send
   Team.ReadBasic.All Channel.ReadBasic.All`.
 - Team/channel selection happens in the **Options flow** (`config_flow.py`), not the
@@ -73,14 +102,19 @@ tests/
 - Token refresh failures / revoked consent raise `ConfigEntryAuthFailed`, which starts
   Home Assistant's reauth flow (`async_step_reauth` → `async_step_reauth_confirm`).
 
-## Microsoft Graph API Client (`api.py`)
+## Microsoft Graph API Client (`graph/`)
 
-- Retries HTTP 429 (respecting `Retry-After`) and 5xx with exponential backoff + jitter,
-  up to `MAX_RETRY_ATTEMPTS` (4). Never retries 4xx.
+- `graph/client.py` (`GraphHttpClient`) retries HTTP 429 (respecting `Retry-After`) and
+  5xx with exponential backoff + jitter, up to `MAX_RETRY_ATTEMPTS` (4). Never retries 4xx.
 - HTTP 401/403 raise `GraphAuthError` immediately (no retry) so callers can trigger reauth
   instead of retrying against a permanently broken token.
-- Supports both plain-text channel messages (`async_send_channel_message`) and full
-  Adaptive Cards (`async_send_adaptive_card`, exposed as the `ha_teams.send_card` service).
+- `graph/discovery.py` (`GraphDiscoveryMixin`) lists joined Teams/Channels.
+- `graph/messages.py` (`GraphMessagesMixin`) sends plain-text channel messages
+  (`async_send_channel_message`) and full Adaptive Cards (`async_send_adaptive_card`,
+  exposed as the `ha_teams.send_card` service) via `renderers/adaptive_card.py`.
+- `graph/__init__.py` composes all mixins into the single `TeamsGraphApiClient` used
+  by `__init__.py`/`config_flow.py`/`notify.py`. Add new Graph endpoint groups as their
+  own module + mixin here rather than growing one large file.
 
 ---
 
@@ -137,7 +171,31 @@ Every change — no matter how small — **must** follow these steps in order:
    - If a code fix is needed, push the commit, wait for CI, and re-check.
    - **Resolve** the review conversation threads (using GraphQL `resolveReviewThread` / `resolve_thread` tool).
    - Repeat until all review conversations are resolved.
-9. **Merge** — Once CI passes and all review comments are resolved, merge the PR into `dev`:
+
+   **Merge gate — never skip this:** a PR must **never** be merged until, for
+   every review comment/thread, either (a) the issue was fixed and the thread
+   resolved, or (b) a clear reply comment was posted explaining why no fix is
+   needed, and the thread was then marked resolved. Passing CI is **not**
+   sufficient on its own.
+
+   *If the Copilot review never appears* (e.g. `reviews`/`reviewRequests` stay
+   empty for an extended period): the PR stays **blocked** — this is not an
+   exception to the merge gate above. First rule out a benign, known-non-fatal
+   condition — the review job's own logs showing `content exclusion policy
+   fetch failed ...; proceeding without exclusions` (404) is expected on
+   non-Enterprise/Business accounts (the content-exclusion policy endpoint
+   simply doesn't exist there) and is already handled internally; it is not
+   the reason a review is missing. Re-request the reviewer once
+   (`gh pr edit <N> --add-reviewer Copilot` or re-run the "Request Copilot
+   Code Review" workflow) and wait again. If it still never posts, do **not**
+   merge on your own judgment: surface this to the user and require an
+   explicit, affirmative instruction to merge without a review before doing
+   so. That instruction is a rare, human-directed override of the automated
+   gate, not something to assume or offer as a routine path — never merge
+   just because the user didn't object, and never suggest it as the default
+   next step.
+9. **Merge** — Once CI passes and all review comments are resolved (see the
+   merge gate above), merge the PR into `dev`:
    ```
    gh pr merge <PR_NUMBER> --squash --delete-branch
    ```
@@ -153,6 +211,10 @@ Every change — no matter how small — **must** follow these steps in order:
 
 **NEVER commit or push directly to `dev` or `main`.**
 Even as admin (bypassed protection), direct pushes skip CI and break the audit trail.
+
+**NEVER merge a PR before the Copilot review is resolved.** Either every
+comment was fixed and its thread resolved, or a justified reply was posted
+and the thread resolved. A green CI run alone is not a merge gate.
 
 ---
 
@@ -215,12 +277,29 @@ When promoting changes from `dev` to `main` for a release:
 
 ---
 
-## Known Issues / Quirks
+## Deferred Features
 
-- No official Teams Bot Transport (proactive bot messages, Adaptive Card actions),
-  Activity Feed transport, or config subentries yet — these were deliberately deferred
-  from an early architecture proposal (`voorstel.md`) to keep the initial scope small.
-  See `C:\temp\skill-ha-teams.md` (local, not committed) for the full rationale.
+Features deliberately kept out of scope for now (an early architecture proposal
+covered a much larger surface area; the following was intentionally trimmed to keep
+the initial integration small and reviewable):
+
+- **Bot Framework transport** — proactive bot messages and interactive Adaptive Card
+  actions (e.g. "Acknowledge"/"Snooze" buttons that call back into Home Assistant).
+  Requires registering a separate Bot Framework bot resource, an inbound webhook
+  receiver, and request signature validation. Placeholder modules reserved in `bot/`.
+- **Activity Feed transport** — Microsoft Graph "teamwork activity feed" notifications
+  (`/users/{id}/teamwork/sendActivityNotification`). Requires the app to be installed
+  for the target user/team first. Placeholder modules reserved in `graph/activity.py`,
+  `graph/app_installation.py`, `renderers/activity.py`.
+- **Config subentries / multi-tenant cloud selection / queue & digest notifications** —
+  not implemented; the current config/options flow model (one Team + Channel per
+  config entry) covers the primary use case.
+- `coordinator.py` and `repairs.py` are placeholder modules for future
+  polling/repair-issue needs; not required by the current notify-only integration.
+
+Implement inside the existing placeholder modules rather than reshaping the package
+again when picking any of these up.
+
 - `tests/conftest.py` stubs the `homeassistant.*` modules instead of depending on the
   full `homeassistant` core package, so unit tests only cover pure logic (PKCE math,
   retry classification, Adaptive Card payload building) — not full config-flow/entity

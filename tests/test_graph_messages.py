@@ -5,8 +5,8 @@ from __future__ import annotations
 import asyncio
 import json
 
-from custom_components.ha_teams.api import TeamsGraphApiClient
 from custom_components.ha_teams.const import DEFAULT_ADAPTIVE_CARD_VERSION
+from custom_components.ha_teams.graph import TeamsGraphApiClient
 
 
 class _FakeOAuthSession:

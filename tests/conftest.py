@@ -137,7 +137,21 @@ def _install_homeassistant_stubs() -> None:
             self.token_url = token_url
 
     class AuthImplementation(LocalOAuth2Implementation):
-        pass
+        """Stand-in mirroring HA core's AuthImplementation constructor.
+
+        Real signature takes a single ``authorization_server`` object (with
+        ``.authorize_url``/``.token_url``) rather than separate url strings.
+        """
+
+        def __init__(self, hass, auth_domain, credential, authorization_server) -> None:
+            super().__init__(
+                hass,
+                auth_domain,
+                credential.client_id,
+                credential.client_secret,
+                authorization_server.authorize_url,
+                authorization_server.token_url,
+            )
 
     app_credentials.ClientCredential = ClientCredential
     app_credentials.AuthorizationServer = AuthorizationServer

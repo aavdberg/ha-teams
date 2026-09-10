@@ -2,7 +2,7 @@
 
 The OAuth2 login itself (including PKCE) is handled by
 ``AbstractOAuth2FlowHandler`` combined with the custom implementation in
-``pkce_oauth2.py``. Once authenticated, the entry is created immediately;
+``oauth.py``. Once authenticated, the entry is created immediately;
 picking which Team/Channel to post to happens in the Options flow, where we
 already have a working OAuth2Session backed by the real config entry.
 """
@@ -18,8 +18,8 @@ from homeassistant.config_entries import SOURCE_REAUTH, ConfigEntry, OptionsFlow
 from homeassistant.core import callback
 from homeassistant.helpers import aiohttp_client, config_entry_oauth2_flow
 
-from .api import TeamsGraphApiClient
 from .const import CONF_CHANNEL_ID, CONF_CHANNEL_NAME, CONF_TEAM_ID, CONF_TEAM_NAME, DOMAIN
+from .graph import TeamsGraphApiClient
 
 _LOGGER = logging.getLogger(__name__)
 

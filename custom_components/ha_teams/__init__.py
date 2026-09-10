@@ -3,17 +3,16 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
 
 import voluptuous as vol
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import ConfigEntryAuthFailed, ServiceValidationError
 from homeassistant.helpers import aiohttp_client, config_entry_oauth2_flow
 
-from .api import GraphAuthError, TeamsGraphApiClient
 from .const import ATTR_CARD, ATTR_CONFIG_ENTRY_ID, CONF_CHANNEL_ID, CONF_TEAM_ID, DOMAIN, SERVICE_SEND_CARD
+from .graph import GraphAuthError, TeamsGraphApiClient
+from .models import TeamsConfigEntry, TeamsRuntimeData
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -27,26 +26,14 @@ SERVICE_SEND_CARD_SCHEMA = vol.Schema(
 )
 
 
-@dataclass
-class TeamsRuntimeData:
-    """Runtime data stored on the config entry."""
-
-    client: TeamsGraphApiClient
-    team_id: str
-    channel_id: str
-
-
-type TeamsConfigEntry = ConfigEntry[TeamsRuntimeData]
-
-
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Register integration-wide services (once, not per config entry)."""
 
     async def _async_handle_send_card(call: ServiceCall) -> None:
         """Handle the ``ha_teams.send_card`` service call.
 
-        See "voorstel.md" section 9.3: allows sending a full Adaptive Card
-        (not just plain text) to the channel configured on a given entry.
+        Allows sending a full Adaptive Card (not just plain text) to the
+        channel configured on a given entry.
         """
         entry_id = call.data[ATTR_CONFIG_ENTRY_ID]
         entry = hass.config_entries.async_get_entry(entry_id)

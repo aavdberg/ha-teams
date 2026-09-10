@@ -42,17 +42,7 @@ retired.
 7. Copy the **Application (client) ID** from the Overview page. You do
    **not** need a client secret.
 
-## 2. Add Application Credentials in Home Assistant
-
-1. In Home Assistant, go to **Settings → Devices & services →
-   Application Credentials** → **Add Application Credential**.
-2. Integration: `Microsoft Teams`.
-3. Client ID: paste the Application (client) ID from step 1.
-4. Client Secret: leave empty (PKCE is used instead); if the form
-   requires a value, enter any placeholder — it is not used for the
-   authorization code exchange.
-
-## 3. Install via HACS (recommended)
+## 2. Install via HACS (recommended)
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=aavdberg&repository=ha-teams&category=integration)
 
@@ -63,11 +53,23 @@ Click the button above, or manually:
 3. Add `https://github.com/aavdberg/ha-teams` with category **Integration**.
 4. Search for "Microsoft Teams" in HACS and click **Install**.
 5. Restart Home Assistant.
-6. Add the integration:
 
-[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=ha_teams)
+> The integration must be installed (and Home Assistant restarted) before
+> it shows up as an option in the Application Credentials picker below.
+
+## 3. Add Application Credentials in Home Assistant
+
+1. In Home Assistant, go to **Settings → Devices & services →
+   Application Credentials** → **Add Application Credential**.
+2. Integration: `Microsoft Teams`.
+3. Client ID: paste the Application (client) ID from step 1.
+4. Client Secret: leave empty (PKCE is used instead); if the form
+   requires a value, enter any placeholder — it is not used for the
+   authorization code exchange.
 
 ## 4. Add the integration
+
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=ha_teams)
 
 1. **Settings → Devices & services → Add integration → Microsoft Teams.**
 2. Sign in with the Microsoft account that is a member of the target Team.
@@ -131,19 +133,48 @@ cp -r ha_teams_dev/custom_components/ha_teams ./ha_teams
 ```
 custom_components/ha_teams/
   __init__.py               # entry setup/unload, runtime data, ha_teams.send_card service
-  api.py                    # Microsoft Graph API client (retry/backoff, Adaptive Cards)
+  models.py                 # TeamsRuntimeData / TeamsConfigEntry dataclasses
   application_credentials.py# authorize/token endpoints for the OAuth2 flow
   config_flow.py            # OAuth2 (PKCE) flow + reauth + team/channel options flow
   const.py                  # domain, scopes, endpoints, retry tuning
   diagnostics.py            # redacted diagnostics (tokens, team/channel IDs)
+  coordinator.py            # placeholder for a future polling coordinator (not used yet)
+  repairs.py                # placeholder for future repair issues (not used yet)
   manifest.json
   notify.py                 # notify platform entity
-  pkce_oauth2.py            # PKCE-enabled OAuth2 implementation
+  oauth.py                  # PKCE-enabled OAuth2 implementation
   services.yaml             # ha_teams.send_card service definition
   strings.json / translations/en.json
 
-tests/                       # pytest unit tests (PKCE, retry logic, Adaptive Cards)
+  graph/                     # Microsoft Graph API client
+    __init__.py               # composes TeamsGraphApiClient from the mixins below
+    client.py                  # HTTP transport: retry/backoff, GraphApiError/GraphAuthError
+    discovery.py                # list joined Teams / Channels
+    messages.py                  # send channel message / Adaptive Card
+    activity.py                   # placeholder: future "activity feed" notifications
+    app_installation.py            # placeholder: future app/bot installation for a team
+
+  renderers/                  # turn HA notification data into Graph payloads
+    __init__.py
+    text.py                     # plain-text (title + message -> Markdown)
+    adaptive_card.py              # Adaptive Card chatMessage payload builder
+    activity.py                    # placeholder: future activity-feed payload renderer
+
+  bot/                        # placeholder: future Bot Framework transport (interactive cards)
+    __init__.py
+    client.py                    # placeholder: Bot Connector REST client
+    callbacks.py                  # placeholder: inbound card-action webhook handler
+    validation.py                  # placeholder: inbound request/signature validation
+
+tests/                       # pytest unit tests (mirrors the package layout above)
 ```
+
+The `graph/`, `renderers/`, and `bot/` placeholder modules exist now so the
+integration can grow into features deliberately deferred for now — a Bot
+Framework transport (interactive Adaptive Card actions) and Graph Activity
+Feed notifications — without another restructuring pass later. See
+[`.github/copilot-instructions.md`](.github/copilot-instructions.md) for
+what's deferred and why.
 
 ## Status
 
