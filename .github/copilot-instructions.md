@@ -37,6 +37,7 @@ custom_components/ha_teams/
 ├── repairs.py                     # Placeholder — future repair issues (not used yet)
 ├── services.yaml                # ha_teams.send_card service definition
 ├── strings.json                 # Source-of-truth translation strings (English)
+├── brand/                        # Local brand images (icon.png/@2x, logo.png/@2x) — HA 2026.3+
 ├── translations/
 │   └── en.json
 ├── graph/                        # Microsoft Graph API client
