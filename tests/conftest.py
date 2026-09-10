@@ -111,6 +111,16 @@ def _install_homeassistant_stubs() -> None:
         async def _token_request(self, data: dict) -> dict:
             return {}
 
+        async def _async_refresh_token(self, token: dict) -> dict:
+            new_token = await self._token_request(
+                {
+                    "grant_type": "refresh_token",
+                    "client_id": self.client_id,
+                    "refresh_token": token["refresh_token"],
+                }
+            )
+            return {**token, **new_token}
+
     class AbstractOAuth2FlowHandler:
         def __init_subclass__(cls, domain: str | None = None, **kwargs) -> None:
             super().__init_subclass__(**kwargs)
