@@ -33,8 +33,7 @@ async def async_get_auth_implementation(hass: HomeAssistant, auth_domain: str, c
         hass,
         auth_domain,
         credential,
-        server.authorize_url,
-        server.token_url,
+        server,
     )
 
 

@@ -17,6 +17,7 @@ from typing import Any
 
 from homeassistant.components.application_credentials import (
     AuthImplementation,
+    AuthorizationServer,
     ClientCredential,
 )
 from homeassistant.core import HomeAssistant
@@ -49,11 +50,10 @@ class MicrosoftGraphPkceOAuth2Implementation(AuthImplementation):
         hass: HomeAssistant,
         auth_domain: str,
         credential: ClientCredential,
-        authorize_url: str,
-        token_url: str,
+        authorization_server: AuthorizationServer,
     ) -> None:
         """Initialize the PKCE OAuth2 implementation."""
-        super().__init__(hass, auth_domain, credential, authorize_url, token_url)
+        super().__init__(hass, auth_domain, credential, authorization_server)
         self._code_verifier: str | None = None
 
     @property
