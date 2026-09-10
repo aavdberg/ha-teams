@@ -11,6 +11,7 @@ from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
+from .destination import require_configured_destination
 from .graph import GraphApiError, GraphAuthError
 from .renderers.text import build_text_message
 from .transports import transport_label
@@ -44,12 +45,14 @@ class TeamsNotifyEntity(NotifyEntity):
             "manufacturer": "Microsoft",
             "model": transport_label(getattr(runtime, "transport", None)),
         }
+        self._attr_available = bool(runtime.team_id and runtime.channel_id)
 
     async def async_send_message(self, message: str, title: str | None = None) -> None:
         """Send a message to the configured Teams channel."""
         text = build_text_message(message, title)
+        team_id, channel_id = require_configured_destination(self._runtime.team_id, self._runtime.channel_id)
         try:
-            await self._runtime.client.async_send_channel_message(self._runtime.team_id, self._runtime.channel_id, text)
+            await self._runtime.client.async_send_channel_message(team_id, channel_id, text)
         except GraphAuthError as err:
             # Token invalid/revoked: let Home Assistant surface a reauth
             # flow instead of silently failing on every future call.
