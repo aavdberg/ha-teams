@@ -21,6 +21,7 @@ from homeassistant.components.application_credentials import (
     ClientCredential,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import aiohttp_client
 
 _CODE_VERIFIER_LENGTH = 64
 
@@ -86,8 +87,26 @@ class MicrosoftGraphPkceOAuth2Implementation(AuthImplementation):
     async def _async_refresh_token(self, token: dict) -> dict:
         """Refresh an existing token.
 
-        No code_verifier is required for refresh_token grants, so the
-        default behaviour from AuthImplementation is sufficient; this is
-        kept explicit for clarity/documentation purposes.
+        No code_verifier is required for refresh_token grants. The token
+        request still goes through ``_token_request`` below so placeholder
+        client secrets are never sent to Microsoft.
         """
         return await super()._async_refresh_token(token)
+
+    async def _token_request(self, data: dict) -> dict:
+        """Make a public-client token request without sending client_secret.
+
+        Home Assistant's Application Credentials UI has a client secret
+        field, and some installations/plugins may require users to enter a
+        placeholder. Microsoft public-client PKCE flows must not include a
+        client secret; sending a placeholder makes the token exchange fail
+        with 401 Unauthorized. This method intentionally diverges from
+        Home Assistant's default ``AuthImplementation`` token request by
+        adding only ``client_id``.
+        """
+        session = aiohttp_client.async_get_clientsession(self.hass)
+        data["client_id"] = self.client_id
+
+        resp = await session.post(self.token_url, data=data)
+        resp.raise_for_status()
+        return await resp.json()
