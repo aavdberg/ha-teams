@@ -179,17 +179,21 @@ Every change — no matter how small — **must** follow these steps in order:
    sufficient on its own.
 
    *If the Copilot review never appears* (e.g. `reviews`/`reviewRequests` stay
-   empty for an extended period): do **not** silently proceed to merge. First
-   rule out a benign, known-non-fatal condition — the review job's own logs
-   showing `content exclusion policy fetch failed ...; proceeding without
-   exclusions` (404) is expected on non-Enterprise/Business accounts (the
-   content-exclusion policy endpoint simply doesn't exist there) and is
-   already handled internally; it is not the reason a review is missing.
-   Re-request the reviewer once
+   empty for an extended period): the PR stays **blocked** — this is not an
+   exception to the merge gate above. First rule out a benign, known-non-fatal
+   condition — the review job's own logs showing `content exclusion policy
+   fetch failed ...; proceeding without exclusions` (404) is expected on
+   non-Enterprise/Business accounts (the content-exclusion policy endpoint
+   simply doesn't exist there) and is already handled internally; it is not
+   the reason a review is missing. Re-request the reviewer once
    (`gh pr edit <N> --add-reviewer Copilot` or re-run the "Request Copilot
-   Code Review" workflow), wait again, and if it still never posts, **ask the
-   user for explicit confirmation before merging** rather than assuming it's
-   safe to proceed.
+   Code Review" workflow) and wait again. If it still never posts, do **not**
+   merge on your own judgment: surface this to the user and require an
+   explicit, affirmative instruction to merge without a review before doing
+   so. That instruction is a rare, human-directed override of the automated
+   gate, not something to assume or offer as a routine path — never merge
+   just because the user didn't object, and never suggest it as the default
+   next step.
 9. **Merge** — Once CI passes and all review comments are resolved (see the
    merge gate above), merge the PR into `dev`:
    ```
