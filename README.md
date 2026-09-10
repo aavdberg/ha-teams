@@ -52,7 +52,22 @@ retired.
    requires a value, enter any placeholder — it is not used for the
    authorization code exchange.
 
-## 3. Add the integration
+## 3. Install via HACS (recommended)
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=aavdberg&repository=ha-teams&category=integration)
+
+Click the button above, or manually:
+
+1. Open HACS in Home Assistant.
+2. Click the three dots menu (top right) and select **Custom repositories**.
+3. Add `https://github.com/aavdberg/ha-teams` with category **Integration**.
+4. Search for "Microsoft Teams" in HACS and click **Install**.
+5. Restart Home Assistant.
+6. Add the integration:
+
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=ha_teams)
+
+## 4. Add the integration
 
 1. **Settings → Devices & services → Add integration → Microsoft Teams.**
 2. Sign in with the Microsoft account that is a member of the target Team.
@@ -63,7 +78,7 @@ retired.
 4. Use **Options** on the integration entry any time to change the
    destination channel.
 
-## 4. Send notifications
+## 5. Send notifications
 
 ```yaml
 action: notify.send_message
@@ -91,11 +106,10 @@ custom_components/ha_teams/
 
 ## Status
 
-This is a self-hosted custom integration (not yet in HACS default repos or
-Home Assistant core). Add it as a custom repository in
-[HACS](https://hacs.xyz/) or copy `custom_components/ha_teams` into your
-Home Assistant `config/custom_components/` folder manually, then restart
-Home Assistant.
+Not yet in the default HACS/Home Assistant core catalogs — add it as a
+custom HACS repository using the button in step 3 above, or copy
+`custom_components/ha_teams` into your Home Assistant
+`config/custom_components/` folder manually, then restart Home Assistant.
 
 ## License
 
