@@ -15,11 +15,11 @@ def test_require_configured_destination_returns_team_and_channel() -> None:
 @pytest.mark.parametrize(
     ("team_id", "channel_id", "missing"),
     [
-        (None, "channel-id", "Team"),
-        ("team-id", None, "Channel"),
-        (None, None, "Team and Channel"),
-        ("", "channel-id", "Team"),
-        ("team-id", "", "Channel"),
+        (None, "channel-id", "select a Team"),
+        ("team-id", None, "select a Channel"),
+        (None, None, "select a Team and a Channel"),
+        ("", "channel-id", "select a Team"),
+        ("team-id", "", "select a Channel"),
     ],
 )
 def test_require_configured_destination_raises_actionable_error(

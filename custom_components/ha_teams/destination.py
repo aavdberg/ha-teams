@@ -10,13 +10,13 @@ def require_configured_destination(team_id: str | None, channel_id: str | None) 
     if team_id and channel_id:
         return team_id, channel_id
 
-    missing = []
-    if not team_id:
-        missing.append("Team")
-    if not channel_id:
-        missing.append("Channel")
-    missing_text = " and ".join(missing)
+    if not team_id and not channel_id:
+        missing_text = "a Team and a Channel"
+    elif not team_id:
+        missing_text = "a Team"
+    else:
+        missing_text = "a Channel"
     raise ServiceValidationError(
         f"Microsoft Teams destination is not configured. Open Settings > Devices & services > "
-        f"Microsoft Teams > Configure and select a {missing_text} before sending notifications."
+        f"Microsoft Teams > Configure and select {missing_text} before sending notifications."
     )
