@@ -60,5 +60,11 @@ Each project will:
 - Confirm all four projects are visible and linked to the repository.
 - Confirm every roadmap issue is assigned to exactly one primary project.
 - Confirm project fields and issue metadata are populated consistently.
+- Confirm every project exposes direct links to its backlog, delivery board,
+  high-priority, and architecture/foundation views.
+- Confirm the external GitHub Project READMEs for Projects 3-6 contain those
+  links; Project README metadata is configured on GitHub and is not stored in
+  this repository's git diff.
+- Confirm the repository Issues sidebar lists the six shared Issue Views.
 - Confirm dependencies are described in issue bodies.
 - Confirm no existing issue is duplicated.
