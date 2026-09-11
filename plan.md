@@ -40,6 +40,8 @@ Each project will:
 - Include a detailed description and README explaining scope, dependencies,
   completion criteria, and exclusions.
 - Use `Status`, `Priority`, and `Roadmap phase` fields.
+- Provide consistent backlog, delivery board, high-priority, and
+  architecture/foundation views.
 - Contain detailed English GitHub issues rather than vague draft notes.
 - Mark prerequisite/architecture work as higher priority than dependent UI or
   documentation work.

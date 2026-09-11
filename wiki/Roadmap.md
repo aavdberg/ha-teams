@@ -2,7 +2,7 @@
 
 The ha-teams roadmap is organized into four public GitHub Projects and matching
 repository milestones. Projects show day-to-day status, priority, and delivery
-phase; milestones group the issues that together deliver a releaseable
+phase; milestones group the issues that together deliver a releasable
 capability.
 
 No target dates are assigned yet. Work should follow the documented
@@ -15,8 +15,19 @@ tested, documented, reviewed, and released.
 | --- | --- | --- | --- |
 | Bot Framework and Interactive Cards | [Project 3](https://github.com/users/aavdberg/projects/3) | [Milestone 1](https://github.com/aavdberg/ha-teams/milestone/1) | Bot/app sender, proactive activities, conversation references, secure callbacks, and interactive cards |
 | Teams Activity Feed Notifications | [Project 4](https://github.com/users/aavdberg/projects/4) | [Milestone 2](https://github.com/aavdberg/ha-teams/milestone/2) | Activity types, permissions, app installation, Graph payloads, recipient targeting, tests, and documentation |
-| Scalable Configuration and Notification Delivery | [Project 5](https://github.com/users/aavdberg/projects/5) | [Milestone 3](https://github.com/aavdberg/ha-teams/milestone/3) | Multiple destinations, cloud profiles, optional durable queues, and digest notifications |
+| Scalable Configuration and Notification Delivery | [Project 5](https://github.com/users/aavdberg/projects/5) | [Milestone 3](https://github.com/aavdberg/ha-teams/milestone/3) | Config subentries for scalable destination management, cloud profiles, optional durable queues, and digest notifications |
 | Reliability, Repairs, and Integration Testing | [Project 6](https://github.com/users/aavdberg/projects/6) | [Milestone 4](https://github.com/aavdberg/ha-teams/milestone/4) | Home Assistant lifecycle tests, repairs, destination health, diagnostics, and safe logging |
+
+## Project views
+
+Every project provides the same views:
+
+- **Roadmap backlog**: complete table with status, priority, phase, assignees,
+  milestone, and labels.
+- **Delivery board**: board layout for moving work through project status.
+- **High priority**: filtered to P0 and P1 work.
+- **Architecture and foundations**: filtered to Discovery and Foundation work
+  that should generally precede dependent implementation.
 
 ## Recommended implementation order
 
@@ -73,7 +84,7 @@ The roadmap does not change the current supported feature set. Today:
 - Microsoft Graph delegated channel messaging is supported.
 - Plain notifications and Adaptive Cards are supported.
 - Messages are sent as the signed-in user.
-- Bot transport, interactive callbacks, Activity Feed notifications, config
-  subentries, queues, and digests are not implemented.
+- Bot transport, interactive callbacks, Activity Feed notifications,
+  destination config subentries, queues, and digests are not implemented.
 
 Follow the projects or individual issues for status updates.
