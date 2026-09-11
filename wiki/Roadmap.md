@@ -39,6 +39,10 @@ these direct links if the tabs are not visible:
 | Scalable Configuration and Notification Delivery | [Open](https://github.com/users/aavdberg/projects/5/views/1) | [Open](https://github.com/users/aavdberg/projects/5/views/2) | [Open](https://github.com/users/aavdberg/projects/5/views/3) | [Open](https://github.com/users/aavdberg/projects/5/views/4) |
 | Reliability, Repairs, and Integration Testing | [Open](https://github.com/users/aavdberg/projects/6/views/1) | [Open](https://github.com/users/aavdberg/projects/6/views/2) | [Open](https://github.com/users/aavdberg/projects/6/views/3) | [Open](https://github.com/users/aavdberg/projects/6/views/4) |
 
+The same four direct links are stored in each GitHub Project's README. Project
+README content is GitHub project metadata, so it does not appear as a file in
+the repository pull request.
+
 ## Repository Issue Views
 
 The repository also provides shared
