@@ -39,6 +39,20 @@ these direct links if the tabs are not visible:
 | Scalable Configuration and Notification Delivery | [Open](https://github.com/users/aavdberg/projects/5/views/1) | [Open](https://github.com/users/aavdberg/projects/5/views/2) | [Open](https://github.com/users/aavdberg/projects/5/views/3) | [Open](https://github.com/users/aavdberg/projects/5/views/4) |
 | Reliability, Repairs, and Integration Testing | [Open](https://github.com/users/aavdberg/projects/6/views/1) | [Open](https://github.com/users/aavdberg/projects/6/views/2) | [Open](https://github.com/users/aavdberg/projects/6/views/3) | [Open](https://github.com/users/aavdberg/projects/6/views/4) |
 
+## Repository Issue Views
+
+The repository also provides shared
+[Issue Views](https://github.com/aavdberg/ha-teams/issues/views). These are
+separate from the views inside each GitHub Project and provide cross-project
+filters from the repository Issues sidebar:
+
+- **Open roadmap**
+- **Bot Framework**
+- **Activity Feed**
+- **Scalable configuration**
+- **Reliability and testing**
+- **Security-sensitive roadmap**
+
 ## Recommended implementation order
 
 1. Build the real Home Assistant integration test harness in
