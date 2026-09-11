@@ -51,13 +51,16 @@ Assistant setup, daily use, troubleshooting, upgrades, and security reporting.
 
 1. Create a detailed GitHub issue for the documentation work.
 2. Create a `chore/*` branch from `dev`.
-3. Add a concise repository change linking the README to the Wiki.
-4. Create and populate the separate `<repository>.wiki.git` repository.
-5. Open a pull request to `dev` for the repository-side link and plan.
-6. Wait for CI and the submitted Copilot review, address all feedback, and
+3. Store the reviewed Wiki source under `wiki/` in the main repository so the
+   documentation is versioned with the integration.
+4. Add a concise repository change linking the README to the published Wiki.
+5. Create and populate the separate `<repository>.wiki.git` repository from
+   the reviewed `wiki/` source.
+6. Open a pull request to `dev` for the repository-side source, link, and plan.
+7. Wait for CI and the submitted Copilot review, address all feedback, and
    merge to `dev`.
-7. Verify the development pre-release workflow.
-8. Do not promote the repository-side documentation change to `main` unless
+8. Verify the development pre-release workflow.
+9. Do not promote the repository-side documentation change to `main` unless
    explicitly requested.
 
 ## Validation
