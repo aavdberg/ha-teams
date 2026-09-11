@@ -12,6 +12,7 @@
 - [Updating and beta testing](Updating-and-beta-testing)
 - [Security and privacy](Security-and-privacy)
 - [FAQ](FAQ)
+- [Roadmap](Roadmap)
 
 ---
 
