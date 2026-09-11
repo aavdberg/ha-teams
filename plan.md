@@ -1,74 +1,62 @@
-# Plan: create a comprehensive GitHub Wiki
+# Plan: organize the ha-teams roadmap in GitHub Projects
 
 ## Goal
 
-Create a user-focused GitHub Wiki for `ha-teams` that guides users from
-prerequisites through installation, Microsoft Entra configuration, Home
-Assistant setup, daily use, troubleshooting, upgrades, and security reporting.
+Turn the deferred roadmap into actionable GitHub issues and public GitHub
+Projects so planned work can be prioritized, implemented, and reviewed without
+losing architectural dependencies.
 
-## Wiki structure
+## Projects
 
-- `Home` - overview, supported functionality, quick-start path, and navigation
-- `Prerequisites-and-supported-environments` - required Home Assistant,
-  Microsoft 365, Teams, Entra, and HACS access
-- `Microsoft-Entra-app-registration` - public-client registration, redirect URI,
-  delegated Graph permissions, account types, tenant selection, and consent
-- `Installation` - HACS and manual installation, restart, upgrades, beta
-  releases, and removal
-- `Home-Assistant-configuration` - Application Credentials, integration setup,
-  OAuth login, Team/Channel selection, manual IDs, options, and reauthentication
-- `Sending-notifications` - notify entity discovery, Developer Tools test, and
-  practical automation examples
-- `Adaptive-Cards` - `ha_teams.send_card`, config entry IDs, card schema,
-  examples, limitations, and safe payload guidance
-- `Multiple-destinations` - one destination per config entry and managing
-  multiple Teams channels/accounts
-- `Troubleshooting` - symptom-based guidance for OAuth, consent, tenant,
-  discovery, delivery, permissions, reauth, logging, and diagnostics
-- `Updating-and-beta-testing` - stable releases, HACS updates, beta releases,
-  manual dev installs, rollback, and version checks
-- `Security-and-privacy` - token model, stored data, diagnostics redaction,
-  least-privilege scopes, safe sharing, and private vulnerability reporting
-- `FAQ` - common questions, current limitations, and unsupported/deferred
-  features
-- `_Sidebar` - persistent navigation for every wiki page
-- `_Footer` - links to the repository, releases, issues, and security reporting
+### Bot Framework and Interactive Cards
 
-## Content principles
+Track the future `teams_bot` transport, including Bot Framework authentication,
+Teams app packaging and installation, conversation references, secure inbound
+callbacks, proactive messages, and interactive Adaptive Card actions.
 
-- Document only currently implemented behavior as available.
-- Clearly label Bot Framework transport, interactive card actions, and activity
-  feed notifications as planned and unavailable.
-- Use placeholders in all tenant, Team, Channel, entity, and config entry
-  examples.
-- Explain both My Home Assistant and direct callback redirect URIs.
-- Keep command and YAML examples copyable and aligned with current Home
-  Assistant syntax.
-- Link related wiki pages to provide both a quick-start route and deeper
-  reference material.
+### Teams Activity Feed Notifications
 
-## Repository and GitHub workflow
+Track Graph activity notifications, permission and consent design, application
+installation, activity payload rendering, user targeting, Home Assistant
+actions, and end-to-end testing.
 
-1. Create a detailed GitHub issue for the documentation work.
-2. Create a `chore/*` branch from `dev`.
-3. Store the reviewed Wiki source under `wiki/` in the main repository so the
-   documentation is versioned with the integration.
-4. Add a concise repository change linking the README to the published Wiki.
-5. Create and populate the separate `<repository>.wiki.git` repository from
-   the reviewed `wiki/` source.
-6. Open a pull request to `dev` for the repository-side source, link, and plan.
-7. Wait for CI and the submitted Copilot review, address all feedback, and
-   merge to `dev`.
-8. Verify the development pre-release workflow.
-9. Do not promote the repository-side documentation change to `main` unless
-   explicitly requested.
+### Scalable Configuration and Notification Delivery
+
+Track config subentries or an equivalent multi-destination model, per-entry
+tenant/cloud selection, durable notification queues, and digest/batching
+support.
+
+### Reliability, Repairs, and Integration Testing
+
+Track destination health detection, repair issues, optional read-side
+coordination, improved diagnostics/observability, and a real Home Assistant
+integration test harness.
+
+## Project configuration
+
+Each project will:
+
+- Be public and linked to `aavdberg/ha-teams`.
+- Include a detailed description and README explaining scope, dependencies,
+  completion criteria, and exclusions.
+- Use `Status`, `Priority`, and `Roadmap phase` fields.
+- Contain detailed English GitHub issues rather than vague draft notes.
+- Mark prerequisite/architecture work as higher priority than dependent UI or
+  documentation work.
+
+## Issue principles
+
+- Create one issue per independently reviewable deliverable.
+- Document context, rationale, implementation scope, security/privacy concerns,
+  dependencies, acceptance criteria, and verification.
+- Reuse the existing placeholder modules instead of restructuring the package.
+- Keep currently unsupported features clearly separated from released behavior.
+- Avoid assigning dates until capacity and implementation order are agreed.
 
 ## Validation
 
-- Verify all internal wiki links resolve.
-- Verify the Wiki is enabled and every planned page is visible on GitHub.
-- Compare scopes, redirect URIs, service names, fields, and examples with the
-  current integration implementation.
-- Confirm no secrets, personal data, tenant-private values, or real Teams
-  identifiers appear in the pages.
-- Confirm README and Wiki navigation point to the published pages.
+- Confirm all four projects are visible and linked to the repository.
+- Confirm every roadmap issue is assigned to exactly one primary project.
+- Confirm project fields and issue metadata are populated consistently.
+- Confirm dependencies are described in issue bodies.
+- Confirm no existing issue is duplicated.

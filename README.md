@@ -13,6 +13,10 @@ retired.
 > for prerequisites, Entra registration, installation, configuration,
 > notification examples, Adaptive Cards, troubleshooting, updates, and
 > security guidance.
+>
+> Planned work is tracked on the
+> [public roadmap](https://github.com/aavdberg/ha-teams/wiki/Roadmap) with
+> linked GitHub Projects, milestones, priorities, and implementation issues.
 
 ## Why PKCE instead of a client secret?
 
