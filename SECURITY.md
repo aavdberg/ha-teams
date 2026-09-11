@@ -10,7 +10,7 @@ as part of a new `ha-teams` version.
 
 | Version | Supported |
 | --- | --- |
-| Latest stable release | Yes |
+| Latest stable release on `main` | Yes |
 | Current `dev` branch | Yes, for development and upcoming releases |
 | Older releases | No |
 
