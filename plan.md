@@ -60,5 +60,7 @@ Each project will:
 - Confirm all four projects are visible and linked to the repository.
 - Confirm every roadmap issue is assigned to exactly one primary project.
 - Confirm project fields and issue metadata are populated consistently.
+- Confirm every project exposes direct links to its backlog, delivery board,
+  high-priority, and architecture/foundation views.
 - Confirm dependencies are described in issue bodies.
 - Confirm no existing issue is duplicated.

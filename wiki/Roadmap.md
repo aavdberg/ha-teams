@@ -29,6 +29,16 @@ Every project provides the same views:
 - **Architecture and foundations**: filtered to Discovery and Foundation work
   that should generally precede dependent implementation.
 
+GitHub can collapse the view tabs depending on browser width or UI state. Use
+these direct links if the tabs are not visible:
+
+| Project | Backlog | Delivery board | High priority | Architecture and foundations |
+| --- | --- | --- | --- | --- |
+| Bot Framework and Interactive Cards | [Open](https://github.com/users/aavdberg/projects/3/views/1) | [Open](https://github.com/users/aavdberg/projects/3/views/2) | [Open](https://github.com/users/aavdberg/projects/3/views/3) | [Open](https://github.com/users/aavdberg/projects/3/views/4) |
+| Teams Activity Feed Notifications | [Open](https://github.com/users/aavdberg/projects/4/views/1) | [Open](https://github.com/users/aavdberg/projects/4/views/2) | [Open](https://github.com/users/aavdberg/projects/4/views/3) | [Open](https://github.com/users/aavdberg/projects/4/views/4) |
+| Scalable Configuration and Notification Delivery | [Open](https://github.com/users/aavdberg/projects/5/views/1) | [Open](https://github.com/users/aavdberg/projects/5/views/2) | [Open](https://github.com/users/aavdberg/projects/5/views/3) | [Open](https://github.com/users/aavdberg/projects/5/views/4) |
+| Reliability, Repairs, and Integration Testing | [Open](https://github.com/users/aavdberg/projects/6/views/1) | [Open](https://github.com/users/aavdberg/projects/6/views/2) | [Open](https://github.com/users/aavdberg/projects/6/views/3) | [Open](https://github.com/users/aavdberg/projects/6/views/4) |
+
 ## Recommended implementation order
 
 1. Build the real Home Assistant integration test harness in
