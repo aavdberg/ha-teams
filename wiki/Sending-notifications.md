@@ -20,16 +20,16 @@ Replace it with your actual entity ID.
 
 ## Send a test from Developer Tools
 
-1. Open **Developer Tools > Actions**.
+1. Open **Developer Tools > Services**.
 2. Select `notify.send_message`.
 3. Choose the Microsoft Teams notify entity as the target.
 4. Enter a message and optional title.
 5. Run the action.
 
-Equivalent YAML:
+Equivalent service call YAML:
 
 ```yaml
-action: notify.send_message
+service: notify.send_message
 target:
   entity_id: notify.your_microsoft_teams_entity
 data:
@@ -45,13 +45,13 @@ If the entity is unavailable, configure the destination under the integration's
 ```yaml
 alias: Notify Teams when motion is detected
 description: Send a Teams message when front door motion starts.
-triggers:
-  - trigger: state
+trigger:
+  - platform: state
     entity_id: binary_sensor.front_door_motion
     from: "off"
     to: "on"
-actions:
-  - action: notify.send_message
+action:
+  - service: notify.send_message
     target:
       entity_id: notify.your_microsoft_teams_entity
     data:
@@ -65,12 +65,12 @@ mode: single
 ```yaml
 alias: Notify Teams about a low battery
 description: Send a warning when a battery sensor drops below 20 percent.
-triggers:
-  - trigger: numeric_state
+trigger:
+  - platform: numeric_state
     entity_id: sensor.device_battery
     below: 20
-actions:
-  - action: notify.send_message
+action:
+  - service: notify.send_message
     target:
       entity_id: notify.your_microsoft_teams_entity
     data:
@@ -86,11 +86,11 @@ mode: single
 ```yaml
 alias: Send nightly status to Teams
 description: Summarize selected Home Assistant states.
-triggers:
-  - trigger: time
+trigger:
+  - platform: time
     at: "22:00:00"
-actions:
-  - action: notify.send_message
+action:
+  - service: notify.send_message
     target:
       entity_id: notify.your_microsoft_teams_entity
     data:
@@ -105,12 +105,14 @@ mode: single
 ## Use variables safely
 
 Home Assistant renders the title and message before ha-teams submits the text to
-Microsoft Graph. Use defaults for missing or unavailable values:
+Microsoft Graph. Check for the `unknown` and `unavailable` states explicitly:
 
 ```yaml
 message: >-
   Temperature is
-  {{ states('sensor.living_room_temperature') | default('unknown', true) }} °C.
+  {{ states('sensor.living_room_temperature')
+     if states('sensor.living_room_temperature') not in ['unknown', 'unavailable']
+     else 'unknown' }} °C.
 ```
 
 Avoid including secrets, access tokens, alarm codes, private URLs, or
@@ -120,11 +122,12 @@ unnecessary personal data in Teams messages.
 
 - The title and message are combined into a Microsoft Graph channel message.
 - Messages appear as the signed-in Microsoft user.
-- Microsoft Teams controls final Markdown rendering and link previews.
+- Plain notifications are sent as text; Markdown formatting is not rendered.
+  Use an Adaptive Card when you need rich formatting.
 - Transient HTTP 429 and server errors are retried automatically.
 - Authentication failures trigger Home Assistant reauthentication.
 - Other Graph errors are logged and the action fails rather than pretending
   the message was delivered.
 
-For rich layouts, see [Adaptive Cards](Adaptive-Cards). For separate
-destinations, see [Multiple destinations](Multiple-destinations).
+For rich layouts, see [Adaptive Cards](Adaptive-Cards.md). For separate
+destinations, see [Multiple destinations](Multiple-destinations.md).

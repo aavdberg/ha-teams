@@ -14,7 +14,7 @@ Channel configured on a ha-teams entry.
 
 The easiest way to obtain the config entry ID safely is:
 
-1. Open **Developer Tools > Actions** or an automation action editor.
+1. Open **Developer Tools > Services** or an automation action editor.
 2. Select **Microsoft Teams: Send Adaptive Card**.
 3. Select the desired config entry from the **Config entry** selector.
 4. Enter the card object.
@@ -24,7 +24,7 @@ The visual editor stores the selected config entry ID in the generated YAML.
 ## Minimal example
 
 ```yaml
-action: ha_teams.send_card
+service: ha_teams.send_card
 data:
   config_entry_id: 0123456789abcdef0123456789abcdef
   card:
@@ -48,11 +48,11 @@ Assistant UI.
 ```yaml
 alias: Send temperature card to Teams
 description: Send a formatted temperature card every morning.
-triggers:
-  - trigger: time
+trigger:
+  - platform: time
     at: "08:00:00"
-actions:
-  - action: ha_teams.send_card
+action:
+  - service: ha_teams.send_card
     data:
       config_entry_id: 0123456789abcdef0123456789abcdef
       card:
@@ -143,4 +143,4 @@ a URL.
 | HTTP 400 | Invalid or unsupported card payload |
 | HTTP 401/403 | Authentication, consent, membership, or Graph permission problem |
 
-See [Troubleshooting](Troubleshooting) for detailed steps.
+See [Troubleshooting](Troubleshooting.md) for detailed steps.

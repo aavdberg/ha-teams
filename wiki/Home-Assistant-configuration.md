@@ -1,7 +1,7 @@
 # Home Assistant configuration
 
-Complete the [Microsoft Entra app registration](Microsoft-Entra-app-registration)
-and [installation](Installation) before following this page.
+Complete the [Microsoft Entra app registration](Microsoft-Entra-app-registration.md)
+and [installation](Installation.md) before following this page.
 
 ## 1. Add Application Credentials
 
@@ -47,9 +47,11 @@ Choose the Application Credential created above.
 Enter:
 
 - Your tenant ID or verified domain for a single-tenant registration.
-- `common` for an app supporting organizations and personal accounts.
-- `organizations` for organizational accounts only.
-- `consumers` for personal Microsoft accounts only.
+- `organizations` or `common` for an app supporting multiple organizational
+  tenants.
+
+Sign in with a work or school account. Personal Microsoft accounts are not
+supported by the Teams Graph APIs used by this integration.
 
 The tenant value controls both Microsoft authorization and token endpoints.
 
@@ -126,4 +128,4 @@ Open:
 
 The notify entity ID depends on the config entry title and any user rename. Do
 not assume a fixed name. Use the exact entity ID shown by Home Assistant in
-[notification examples](Sending-notifications).
+[notification examples](Sending-notifications.md).

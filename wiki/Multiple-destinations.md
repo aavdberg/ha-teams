@@ -31,8 +31,8 @@ Home Assistant creates a separate notify entity and device for every entry.
 Plain notifications target the desired notify entity:
 
 ```yaml
-actions:
-  - action: notify.send_message
+action:
+  - service: notify.send_message
     target:
       entity_id: notify.teams_operations
     data:
@@ -43,8 +43,8 @@ actions:
 Adaptive Cards select the desired config entry:
 
 ```yaml
-actions:
-  - action: ha_teams.send_card
+action:
+  - service: ha_teams.send_card
     data:
       config_entry_id: 0123456789abcdef0123456789abcdef
       card:

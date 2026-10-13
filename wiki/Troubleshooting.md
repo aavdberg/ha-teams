@@ -1,7 +1,7 @@
 # Troubleshooting
 
 Start with the symptom below. When collecting logs or diagnostics, follow the
-[security and privacy guidance](Security-and-privacy).
+[security and privacy guidance](Security-and-privacy.md).
 
 ## Microsoft Teams is missing from Add Integration
 
@@ -38,7 +38,7 @@ Confirm:
 - Scheme, hostname, port, path, and trailing slash are identical.
 - Home Assistant's external URL is correct.
 
-See [Microsoft Entra app registration](Microsoft-Entra-app-registration).
+See [Microsoft Entra app registration](Microsoft-Entra-app-registration.md).
 
 ## Consent required or permission denied
 
@@ -137,7 +137,7 @@ If failures continue:
 
 The card is malformed or uses unsupported Teams schema features.
 
-1. Start with the minimal example on [Adaptive Cards](Adaptive-Cards).
+1. Start with the minimal example on [Adaptive Cards](Adaptive-Cards.md).
 2. Set `type: AdaptiveCard` and `version: "1.5"`.
 3. Remove elements until the card succeeds.
 4. Confirm YAML data types and indentation.

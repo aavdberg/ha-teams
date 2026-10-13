@@ -1,18 +1,18 @@
 **ha-teams user guide**
 
-- [Home](Home)
-- [Prerequisites](Prerequisites-and-supported-environments)
-- [Microsoft Entra registration](Microsoft-Entra-app-registration)
-- [Installation](Installation)
-- [Home Assistant configuration](Home-Assistant-configuration)
-- [Sending notifications](Sending-notifications)
-- [Adaptive Cards](Adaptive-Cards)
-- [Multiple destinations](Multiple-destinations)
-- [Troubleshooting](Troubleshooting)
-- [Updating and beta testing](Updating-and-beta-testing)
-- [Security and privacy](Security-and-privacy)
-- [FAQ](FAQ)
-- [Roadmap](Roadmap)
+- [Home](Home.md)
+- [Prerequisites](Prerequisites-and-supported-environments.md)
+- [Microsoft Entra registration](Microsoft-Entra-app-registration.md)
+- [Installation](Installation.md)
+- [Home Assistant configuration](Home-Assistant-configuration.md)
+- [Sending notifications](Sending-notifications.md)
+- [Adaptive Cards](Adaptive-Cards.md)
+- [Multiple destinations](Multiple-destinations.md)
+- [Troubleshooting](Troubleshooting.md)
+- [Updating and beta testing](Updating-and-beta-testing.md)
+- [Security and privacy](Security-and-privacy.md)
+- [FAQ](FAQ.md)
+- [Roadmap](Roadmap.md)
 
 ---
 

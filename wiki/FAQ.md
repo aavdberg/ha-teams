@@ -31,8 +31,8 @@ though public-client flows are enabled for PKCE.
 
 - Single-tenant app: Directory tenant ID or verified tenant domain.
 - Multi-tenant organizational app: `organizations` or `common`.
-- Organizational and personal accounts: `common`.
-- Personal accounts only: `consumers`.
+- Personal Microsoft accounts are not supported by the Teams Graph APIs used
+  by this integration. Authenticate with a work or school account.
 
 `AADSTS50194` usually means a single-tenant app was used with `common`.
 
@@ -91,9 +91,9 @@ integration entry and select or manually enter both IDs.
 
 ## Can I use a personal Microsoft account?
 
-Only if the Entra app registration supports personal Microsoft accounts and the
-account has access to the relevant Teams environment. Use `common` or
-`consumers` according to the registration.
+No. The Teams Graph APIs used by ha-teams require a work or school account in
+an organizational Microsoft Entra tenant. Even if an app registration allows
+personal accounts, sign in with an organizational account.
 
 ## Is ha-teams part of Home Assistant Core or the default HACS catalog?
 

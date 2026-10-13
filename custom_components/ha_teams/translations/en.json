@@ -10,9 +10,9 @@
       },
       "tenant": {
         "title": "Microsoft Entra tenant",
-        "description": "Enter your Microsoft Entra (Azure AD) tenant ID or domain (e.g. `contoso.onmicrosoft.com`) if your app registration is single-tenant (\"Accounts in this organizational directory only\"). Leave the default `common` if it's multi-tenant or supports personal Microsoft accounts.",
+        "description": "Enter your Microsoft Entra (Azure AD) tenant ID or domain (e.g. `contoso.onmicrosoft.com`) if your app registration is single-tenant (\"Accounts in this organizational directory only\"). For multiple organizational tenants, use `organizations` or `common`. Personal Microsoft accounts are not supported.",
         "data": {
-          "tenant_id": "Tenant ID / domain (or common/organizations/consumers)"
+          "tenant_id": "Tenant ID / domain (or common/organizations)"
         }
       },
       "pick_implementation": {
