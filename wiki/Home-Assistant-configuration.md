@@ -1,7 +1,7 @@
 # Home Assistant configuration
 
-Complete the [Microsoft Entra app registration](Microsoft-Entra-app-registration)
-and [installation](Installation) before following this page.
+Complete the [Microsoft Entra app registration](Microsoft-Entra-app-registration.md)
+and [installation](Installation.md) before following this page.
 
 ## 1. Add Application Credentials
 
@@ -128,4 +128,4 @@ Open:
 
 The notify entity ID depends on the config entry title and any user rename. Do
 not assume a fixed name. Use the exact entity ID shown by Home Assistant in
-[notification examples](Sending-notifications).
+[notification examples](Sending-notifications.md).

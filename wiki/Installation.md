@@ -66,7 +66,7 @@ For manual installs, replace the complete integration directory with the files
 from the desired release and restart. Do not mix files from different
 versions.
 
-See [Updating and beta testing](Updating-and-beta-testing) for pre-releases,
+See [Updating and beta testing](Updating-and-beta-testing.md) for pre-releases,
 rollback, and version checks.
 
 ## Removing the integration

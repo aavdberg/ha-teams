@@ -121,5 +121,5 @@ If Microsoft reports a redirect mismatch:
 - Remove an accidental trailing slash.
 - Make sure Home Assistant is using the same external URL.
 
-Next: [Install ha-teams](Installation), then
-[configure Home Assistant](Home-Assistant-configuration).
+Next: [Install ha-teams](Installation.md), then
+[configure Home Assistant](Home-Assistant-configuration.md).

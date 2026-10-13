@@ -129,5 +129,5 @@ unnecessary personal data in Teams messages.
 - Other Graph errors are logged and the action fails rather than pretending
   the message was delivered.
 
-For rich layouts, see [Adaptive Cards](Adaptive-Cards). For separate
-destinations, see [Multiple destinations](Multiple-destinations).
+For rich layouts, see [Adaptive Cards](Adaptive-Cards.md). For separate
+destinations, see [Multiple destinations](Multiple-destinations.md).

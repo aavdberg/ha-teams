@@ -29,31 +29,31 @@ secret is required or used.
 
 ## Quick start
 
-1. Review the [prerequisites](Prerequisites-and-supported-environments).
-2. [Register an application in Microsoft Entra](Microsoft-Entra-app-registration).
-3. [Install ha-teams](Installation).
-4. [Add Application Credentials and configure the integration](Home-Assistant-configuration).
-5. [Send a test notification](Sending-notifications).
+1. Review the [prerequisites](Prerequisites-and-supported-environments.md).
+2. [Register an application in Microsoft Entra](Microsoft-Entra-app-registration.md).
+3. [Install ha-teams](Installation.md).
+4. [Add Application Credentials and configure the integration](Home-Assistant-configuration.md).
+5. [Send a test notification](Sending-notifications.md).
 
 Most setup problems are caused by an incorrect redirect URI, tenant value, or
-missing Microsoft Graph consent. See [Troubleshooting](Troubleshooting) for a
+missing Microsoft Graph consent. See [Troubleshooting](Troubleshooting.md) for a
 symptom-based guide.
 
 ## Documentation
 
 | Topic | Use it when |
 | --- | --- |
-| [Prerequisites and supported environments](Prerequisites-and-supported-environments) | Checking whether your Home Assistant and Microsoft setup are suitable |
-| [Microsoft Entra app registration](Microsoft-Entra-app-registration) | Creating the OAuth application and assigning Graph permissions |
-| [Installation](Installation) | Installing with HACS or manually |
-| [Home Assistant configuration](Home-Assistant-configuration) | Adding credentials, signing in, and choosing a channel |
-| [Sending notifications](Sending-notifications) | Testing the notify entity and creating automations |
-| [Adaptive Cards](Adaptive-Cards) | Sending structured cards through the integration service |
-| [Multiple destinations](Multiple-destinations) | Sending to several channels or using several accounts |
-| [Troubleshooting](Troubleshooting) | Resolving authentication, discovery, and delivery errors |
-| [Updating and beta testing](Updating-and-beta-testing) | Updating, testing pre-releases, rolling back, or removing the integration |
-| [Security and privacy](Security-and-privacy) | Understanding tokens, stored data, diagnostics, and safe reporting |
-| [FAQ](FAQ) | Answers about bots, secrets, permissions, and limitations |
+| [Prerequisites and supported environments](Prerequisites-and-supported-environments.md) | Checking whether your Home Assistant and Microsoft setup are suitable |
+| [Microsoft Entra app registration](Microsoft-Entra-app-registration.md) | Creating the OAuth application and assigning Graph permissions |
+| [Installation](Installation.md) | Installing with HACS or manually |
+| [Home Assistant configuration](Home-Assistant-configuration.md) | Adding credentials, signing in, and choosing a channel |
+| [Sending notifications](Sending-notifications.md) | Testing the notify entity and creating automations |
+| [Adaptive Cards](Adaptive-Cards.md) | Sending structured cards through the integration service |
+| [Multiple destinations](Multiple-destinations.md) | Sending to several channels or using several accounts |
+| [Troubleshooting](Troubleshooting.md) | Resolving authentication, discovery, and delivery errors |
+| [Updating and beta testing](Updating-and-beta-testing.md) | Updating, testing pre-releases, rolling back, or removing the integration |
+| [Security and privacy](Security-and-privacy.md) | Understanding tokens, stored data, diagnostics, and safe reporting |
+| [FAQ](FAQ.md) | Answers about bots, secrets, permissions, and limitations |
 
 ## Getting help
 

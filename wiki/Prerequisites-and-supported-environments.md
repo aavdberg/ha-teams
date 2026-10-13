@@ -44,7 +44,7 @@ administrator.
 
 The app registration must allow public-client flows and must have the correct
 redirect URI. Follow
-[Microsoft Entra app registration](Microsoft-Entra-app-registration) exactly;
+[Microsoft Entra app registration](Microsoft-Entra-app-registration.md) exactly;
 OAuth callback settings are sensitive to small differences.
 
 ## Network requirements
@@ -86,4 +86,4 @@ registration and enter its tenant ID during Home Assistant setup.
 | Teams Activity Feed notifications | Not implemented |
 | Incoming Webhook / Office 365 Connector transport | Not used |
 
-Continue with [Microsoft Entra app registration](Microsoft-Entra-app-registration).
+Continue with [Microsoft Entra app registration](Microsoft-Entra-app-registration.md).
