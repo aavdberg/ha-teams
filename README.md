@@ -8,6 +8,16 @@ needs to be stored in Home Assistant — the app registration can be a
 legacy Incoming Webhook / Office 365 Connector method Microsoft has
 retired.
 
+> **New to ha-teams?** Read the
+> [complete user guide in the GitHub Wiki](https://github.com/aavdberg/ha-teams/wiki)
+> for prerequisites, Entra registration, installation, configuration,
+> notification examples, Adaptive Cards, troubleshooting, updates, and
+> security guidance.
+>
+> Planned work is tracked on the
+> [public roadmap](https://github.com/aavdberg/ha-teams/wiki/Roadmap) with
+> linked GitHub Projects, milestones, priorities, and implementation issues.
+
 ## Why PKCE instead of a client secret?
 
 * No long-lived secret stored in `.storage/application_credentials` — only
