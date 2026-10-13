@@ -24,7 +24,7 @@ The visual editor stores the selected config entry ID in the generated YAML.
 ## Minimal example
 
 ```yaml
-action: ha_teams.send_card
+service: ha_teams.send_card
 data:
   config_entry_id: 0123456789abcdef0123456789abcdef
   card:
@@ -48,11 +48,11 @@ Assistant UI.
 ```yaml
 alias: Send temperature card to Teams
 description: Send a formatted temperature card every morning.
-triggers:
-  - trigger: time
+trigger:
+  - platform: time
     at: "08:00:00"
-actions:
-  - action: ha_teams.send_card
+action:
+  - service: ha_teams.send_card
     data:
       config_entry_id: 0123456789abcdef0123456789abcdef
       card:

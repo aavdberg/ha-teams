@@ -9,13 +9,13 @@ legacy Incoming Webhook / Office 365 Connector method Microsoft has
 retired.
 
 > **New to ha-teams?** Read the
-> [complete user guide in the GitHub Wiki](https://github.com/aavdberg/ha-teams/wiki)
+> [complete user guide](wiki/Home.md)
 > for prerequisites, Entra registration, installation, configuration,
 > notification examples, Adaptive Cards, troubleshooting, updates, and
 > security guidance.
 >
 > Planned work is tracked on the
-> [public roadmap](https://github.com/aavdberg/ha-teams/wiki/Roadmap) with
+> [public roadmap](wiki/Roadmap.md) with
 > linked GitHub Projects, milestones, priorities, and implementation issues.
 
 ## Why PKCE instead of a client secret?
@@ -24,17 +24,16 @@ retired.
   a short-lived access token + refresh token.
 * Matches Microsoft Entra ID's recommended pattern for native/public
   clients.
-* Works the same for single-tenant, multi-tenant, or personal Microsoft
-  accounts (the app registration's "supported account types" controls that,
-  not this integration).
+* Supports single-tenant and multi-tenant organizational accounts. Personal
+  Microsoft accounts are not supported by the Teams Graph APIs used here.
 
 ## 1. Register an application in Microsoft Entra ID (Azure AD)
 
 1. Go to [Microsoft Entra admin center](https://entra.microsoft.com/) →
    **Applications → App registrations → New registration**.
 2. Name: `Home Assistant Teams` (or anything you like).
-3. Supported account types: choose what fits your tenant (e.g. "Accounts
-   in this organizational directory only").
+3. Supported account types: choose **Accounts in this organizational
+   directory only** or **Accounts in any organizational directory**.
 4. Redirect URI: platform **Web** (not "Public client/native"), value:
    `https://my.home-assistant.io/redirect/oauth` if you use My Home
    Assistant, or `https://<your-ha-url>/auth/external/callback` otherwise.
@@ -91,9 +90,10 @@ Click the button above, or manually:
    this organizational directory only", step 1 above), enter your
    Microsoft Entra **tenant ID** or verified domain (e.g.
    `contoso.onmicrosoft.com`) — find it on the Entra ID **Overview** page.
-   Leave the default `common` if your app registration is multi-tenant or
-   supports personal Microsoft accounts. Getting this wrong causes a
-   `AADSTS50194` sign-in error; you can safely retry the flow to correct it.
+   For a multi-tenant organizational app, use `organizations` or `common`.
+   Personal Microsoft accounts are not supported. Getting the tenant wrong
+   causes an `AADSTS50194` sign-in error; you can safely retry the flow to
+   correct it.
 4. Sign in with the Microsoft account that is a member of the target Team.
 5. Home Assistant lists the Teams/Channels you belong to — pick a Team,
    then a Channel. If listing fails (e.g. missing admin consent), you can
@@ -192,7 +192,7 @@ Home Assistant cannot know where to post the message.
 ### Basic notification
 
 ```yaml
-action: notify.send_message
+service: notify.send_message
 target:
   entity_id: notify.your_microsoft_teams_entity
 data:
@@ -205,13 +205,13 @@ data:
 ```yaml
 alias: Notify Teams when motion is detected
 description: Send a Microsoft Teams notification when motion starts.
-triggers:
-  - trigger: state
+trigger:
+  - platform: state
     entity_id: binary_sensor.front_door_motion
     from: "off"
     to: "on"
-actions:
-  - action: notify.send_message
+action:
+  - service: notify.send_message
     target:
       entity_id: notify.your_microsoft_teams_entity
     data:
@@ -225,12 +225,12 @@ mode: single
 ```yaml
 alias: Notify Teams about low battery
 description: Send a Teams notification when a battery sensor is low.
-triggers:
-  - trigger: numeric_state
+trigger:
+  - platform: numeric_state
     entity_id: sensor.device_battery
     below: 20
-actions:
-  - action: notify.send_message
+action:
+  - service: notify.send_message
     target:
       entity_id: notify.your_microsoft_teams_entity
     data:
@@ -246,12 +246,12 @@ mode: single
 ```yaml
 alias: Notify Teams when alarm is triggered
 description: Send a high-priority status message to Teams.
-triggers:
-  - trigger: state
+trigger:
+  - platform: state
     entity_id: alarm_control_panel.home_alarm
     to: "triggered"
-actions:
-  - action: notify.send_message
+action:
+  - service: notify.send_message
     target:
       entity_id: notify.your_microsoft_teams_entity
     data:
@@ -333,7 +333,7 @@ custom_components/ha_teams/
 
   renderers/                  # turn HA notification data into Graph payloads
     __init__.py
-    text.py                     # plain-text (title + message -> Markdown)
+    text.py                     # plain-text (title + message)
     adaptive_card.py              # Adaptive Card chatMessage payload builder
     activity.py                    # placeholder: future activity-feed payload renderer
 

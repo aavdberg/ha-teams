@@ -17,9 +17,13 @@ icon; this does not affect functionality.
 
 ## Microsoft 365 and Teams
 
-You need:
+You need a **work or school account** in an organizational Microsoft Entra
+tenant. Personal Microsoft accounts are not supported by the Teams Graph APIs
+used by this integration.
 
-- A Microsoft account that can sign in to the selected tenant.
+You also need:
+
+- A work or school account that can sign in to the selected tenant.
 - Membership of the target Microsoft Team.
 - Access to the target channel.
 - Permission to send channel messages as that user.
@@ -63,8 +67,6 @@ The supported account type is controlled by your app registration:
 | --- | --- |
 | Accounts in this organizational directory only | Your tenant ID or verified tenant domain |
 | Accounts in any organizational directory | `organizations` or `common` |
-| Organizational and personal Microsoft accounts | `common` |
-| Personal Microsoft accounts only | `consumers` |
 
 For the simplest organization-only deployment, use a single-tenant
 registration and enter its tenant ID during Home Assistant setup.

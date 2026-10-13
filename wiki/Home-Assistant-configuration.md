@@ -47,9 +47,11 @@ Choose the Application Credential created above.
 Enter:
 
 - Your tenant ID or verified domain for a single-tenant registration.
-- `common` for an app supporting organizations and personal accounts.
-- `organizations` for organizational accounts only.
-- `consumers` for personal Microsoft accounts only.
+- `organizations` or `common` for an app supporting multiple organizational
+  tenants.
+
+Sign in with a work or school account. Personal Microsoft accounts are not
+supported by the Teams Graph APIs used by this integration.
 
 The tenant value controls both Microsoft authorization and token endpoints.
 

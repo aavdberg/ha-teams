@@ -34,7 +34,9 @@ uses.
 2. Go to **Identity > Applications > App registrations**.
 3. Select **New registration**.
 4. Enter a recognizable name, such as `Home Assistant Teams`.
-5. Select the supported account type that matches your deployment.
+5. Select **Accounts in this organizational directory only** or **Accounts in
+   any organizational directory**. Personal Microsoft accounts are not
+   supported by the Teams Graph APIs used by ha-teams.
 6. Under **Redirect URI**, choose platform **Web**.
 7. Enter the redirect URI selected above.
 8. Select **Register**.
@@ -99,7 +101,11 @@ During Home Assistant setup, the integration asks for a tenant:
 - Single-tenant registration: use the Directory (tenant) ID or a verified
   domain such as `contoso.onmicrosoft.com`.
 - Multi-tenant registration: use `common` or `organizations`.
-- Personal-account-only registration: use `consumers`.
+
+Sign in with a work or school account in an organizational tenant. Do not use
+`consumers`; personal Microsoft accounts are not supported by the Teams Graph
+APIs used by this integration. If an app registration also allows personal
+accounts, that does not make personal-account sign-in work with ha-teams.
 
 Using `common` with a single-tenant registration commonly causes
 `AADSTS50194`.
